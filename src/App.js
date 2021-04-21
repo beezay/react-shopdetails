@@ -1,12 +1,17 @@
+import { Route, Switch } from "react-router";
+import Dashboard from "./components/HomePage/Dashboard";
+import AddMall from "./components/MallPage/AddMall";
 
-import './App.css';
-
-function App() {
+const App = () => {
   return (
-    <div className="App">
-
-    </div>
+    <>
+      <Switch>
+      <Route exact path="/" render={()=> <Dashboard/>} />
+      <Route exact path="/addMall" render={()=> <AddMall/>} />
+        {/* <Dashboard /> */}
+      </Switch>
+    </>
   );
-}
+};
 
 export default App;
