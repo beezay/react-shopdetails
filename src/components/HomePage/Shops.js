@@ -29,7 +29,6 @@ const Shops = () => {
           <img src="./assets/mall.jfif" alt="" />
         </div>
       </div>
-      <p className="show-more">View All</p>
     </div>
   );
 };
