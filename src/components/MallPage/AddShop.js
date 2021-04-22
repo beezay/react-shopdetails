@@ -1,10 +1,19 @@
 import React from "react";
 
-const AddShop = () => {
+const AddShop = ({ setShopAdd }) => {
+  const handleCloseShopAdd = () => {
+    setShopAdd(false);
+  };
+
   return (
     <div className="add-shop-form">
       <div className="top-details">
-        <p>SHOPS</p>
+        <div className="top-header">
+          <p>SHOPS</p>
+          <p className="close-btn" onClick={handleCloseShopAdd}>
+            X
+          </p>
+        </div>
         <hr />
       </div>
       <form>
