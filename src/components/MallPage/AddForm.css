@@ -74,6 +74,8 @@ label.image-add-shop:hover {
 
 .add-shop {
   transition: all 0.4s ease-out;
+  width: max-content;
+  cursor: pointer;
 }
 
 .add-shop:hover {
@@ -107,7 +109,27 @@ label.image-add-shop:hover {
 }
 
 /* ADD SHOPS FORM CSS  */
-.top-details p {
+.top-details .top-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.top-details .top-header .close-btn {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin-right: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.top-details .top-header .close-btn:hover {
+    transform: scale(1.5);
+    font-weight: 1200;
+    color: crimson;
+}
+
+.top-details .top-header p {
   font-size: 2rem;
   margin-bottom: 0;
   color: gray;

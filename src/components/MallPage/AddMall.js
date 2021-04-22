@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import AddShop from "./AddShop";
 import "./AddForm.css";
-const AddMall = () => {
+import { withRouter } from "react-router";
+const AddMall = ({ history }) => {
+  const [shopAdd, setShopAdd] = useState(false);
+
+  const handleAddShop = () => {
+    setShopAdd(true);
+  };
+
+  const handleCancelAddMall = () => {
+    history.push("/");
+  };
+
   return (
     <>
-      <div>This is to add New Mall</div>
       <div className="container">
         <div className="add-mall-form">
           <form>
@@ -35,14 +45,24 @@ const AddMall = () => {
               </label>
             </div>
           </form>
-          <AddShop />
-          <div className="add-shop">
+          {shopAdd && <AddShop setShopAdd={setShopAdd} />}
+          <div className="add-shop" onClick={handleAddShop}>
             <p>
               Add Shop <span>+</span>{" "}
             </p>
           </div>
-          <button className="w-100 btn btn-lg btn-outline-primary btn-save" type="submit">
+          <button
+            className="w-100 btn btn-lg btn-outline-primary btn-save"
+            type="submit"
+          >
             SAVE MALL
+          </button>
+          <button
+            className="w-100 btn btn-lg btn-outline-warning btn-cancel"
+            type="button"
+            onClick={handleCancelAddMall}
+          >
+            CANCEL
           </button>
         </div>
       </div>
@@ -50,4 +70,4 @@ const AddMall = () => {
   );
 };
 
-export default AddMall;
+export default withRouter(AddMall);

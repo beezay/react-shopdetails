@@ -1,12 +1,21 @@
 .dashboard-wrapper {
-    margin: 2rem auto;
-    margin-top: 2rem;
-    display: flex;
-    flex-direction: column;
-    /* flex-wrap: wrap; */
-    
+  margin: 2rem auto;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  /* flex-wrap: wrap; */
 }
 
+.dashboard-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-content: center;
+}
+
+.dashboard-header .search {
+  margin: 0 auto;
+}
 
 .btn-add-mall {
   padding: 12px;
@@ -26,23 +35,43 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-.malls-wrapper, .shops-wrapper {
-    margin: 2rem 2rem;
-    margin-top: 2rem;
+.malls-wrapper,
+.shops-wrapper {
+  margin: 2rem 2rem;
+  margin-top: 2rem;
 }
 
-.malls-wrapper p, .shops-wrapper p {
-    font-size: 1.6rem;
-    
+.malls-wrapper p,
+.shops-wrapper p {
+  font-size: 1.6rem;
 }
 
-.mall-heading, .shop-heading {
-    margin-bottom: 1.5rem;
-    
+.mall-heading,
+.shop-heading {
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  width: max-content;
+  padding: 12px;
+  transition: all 0.3s ease-in;
 }
-.mall-heading h2, .shop-heading h2 {
-    font-size: 2rem;
-    font-weight: 1000;
+
+/* .mall-heading:hover,
+.shop-heading:hover {
+  background-color: darkgrey;
+  border-radius: 10px;
+  letter-spacing: 6px;
+} */
+
+.mall-heading:hover h2,
+.shop-heading:hover h2 {
+  color: slateblue;
+}
+
+.mall-heading h2,
+.shop-heading h2 {
+  font-size: 2rem;
+  font-weight: 1000;
+  transition: all 0.3s ease-in;
 }
 
 .image-wrapper {
@@ -57,6 +86,7 @@
   padding: 30% 0;
   position: relative;
   border-radius: 5px;
+  cursor: pointer;
   opacity: 1;
 }
 
@@ -72,7 +102,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   min-height: 96%;
-  max-width: 98%;  
+  max-width: 98%;
   opacity: 1;
   /* border: 2px solid red; */
 }
@@ -81,7 +111,7 @@
   font-size: 2.5rem;
   font-weight: 900;
   opacity: 1;
-  z-index: 2!important;
+  z-index: 2 !important;
   letter-spacing: 5px;
 }
 
@@ -98,4 +128,18 @@
 }
 .image-container:hover img {
   opacity: 1;
+}
+
+.show-more {
+  font-size: 1.6rem;
+  cursor: pointer;
+  color: tomato;
+  margin-top: 1.2rem;
+  transition: all 0.5s ease-in-out;
+}
+
+.show-more:hover {
+  letter-spacing: 2px;
+  color: crimson;
+  font-weight: 500;
 }
