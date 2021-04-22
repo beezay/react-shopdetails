@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
-import SearchMall from "../SearchMall";
+import SearchMall from "../Search/SearchMall";
 import "./Dashboard.css";
 import Malls from "./Malls";
 import Shops from "./Shops";
@@ -28,14 +28,16 @@ const Dashboard = ({ history }) => {
         <SearchMall />
       </div>
       <div className="malls-container">
-        <Malls history={history} />
+        <Malls />
         <p className="show-more" onClick={handleAllMalls}>
           View All
         </p>
       </div>
       <div className="shops-container">
-        <Shops history={history} />
-        <p className="show-more" onClick={handleAllShops}>View All</p>
+        <Shops />
+        <p className="show-more" onClick={handleAllShops}>
+          View All
+        </p>
       </div>
     </div>
   );

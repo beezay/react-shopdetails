@@ -1,6 +1,10 @@
 import React from "react";
+import { useHistory } from "react-router";
 
 const Shops = () => {
+
+  const history = useHistory()
+
   return (
     <div className="shops-wrapper">
       <div className="shop-heading">
