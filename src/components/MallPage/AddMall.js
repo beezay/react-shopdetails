@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import AddShop from "./AddShop";
-import firebase from "../../Firebase/firebase";
+
+import {fireStore} from '../../Firebase/firebase'
+
 import "./AddForm.css";
 import { withRouter } from "react-router";
 import { useForm } from "react-hook-form";
@@ -26,14 +28,15 @@ const AddMall = ({ history }) => {
   // const handleOnChange = (e) => {
   // }
 
-  const handleMallSubmit = data => {
-    console.log(data);
+  
 
-    const fireStore = firebase.database().ref("/mallInfo");
-
-    fireStore.push(data);
+  const handleMallSubmit = (e) => {
     
-  };
+    fireStore.collection('mallInfo').add(data)
+   
+    
+  }
+
 
   return (
     <>
