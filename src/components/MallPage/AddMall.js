@@ -8,13 +8,13 @@ import { withRouter } from "react-router";
 import { useForm } from "react-hook-form";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
-  const [mallName, setMallName] = useState("");
-  const [mallAddress, setMallAddress] = useState("");
+  
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    reset
   } = useForm();
 
   const handleAddShop = () => {
@@ -30,11 +30,9 @@ const AddMall = ({ history }) => {
 
   
 
-  const handleMallSubmit = (e) => {
-    
+  const handleMallSubmit = (data) => {
     fireStore.collection('mallInfo').add(data)
-   
-    
+    reset({defaultValue:''})
   }
 
 
