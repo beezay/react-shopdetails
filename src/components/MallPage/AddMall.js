@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import AddShop from "./AddShop";
+import firebase from '../../Firebase/firebase'
 import "./AddForm.css";
 import { withRouter } from "react-router";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
+  const [mallName, setMallName] = useState('')
+  const [mallAddress, setMallAddress] = useState('')
 
   const handleAddShop = () => {
     setShopAdd(true);
@@ -13,18 +16,38 @@ const AddMall = ({ history }) => {
     history.push("/");
   };
 
+  // const handleOnChange = (e) => {
+  // }
+
+
+  const handleMallSubmit = (e) => {
+    e.preventDefault();
+    const fireStore = firebase.database().ref('/mallInfo');
+    let data = {
+      mallName: mallName,
+      mallAddress: mallAddress
+    }
+    fireStore.push(data);
+    console.log(mallName, mallAddress);
+    //Clearing the Form
+    setMallName('')
+    setMallAddress('')
+  }
+
   return (
     <>
       <div className="container">
         <div className="add-mall-form">
-          <form>
+          <form onSubmit={handleMallSubmit} >
             <h1 className="h3 mb-3 fw-normal">Please fill up details</h1>
             <div className="form-floating">
               <input
                 type="text"
                 className="form-control"
-                id="floatingInput"
+                id="mall-name"
                 placeholder="Name of the Mall"
+                value={mallName}
+                onChange={(e)=> setMallName(e.target.value) }
               />
               {/* <label htmlFor="floatingInput">Mall Name</label> */}
             </div>
@@ -32,8 +55,11 @@ const AddMall = ({ history }) => {
               <input
                 type="text"
                 className="form-control"
-                id="floatingPassword"
+                id="mall-address"
                 placeholder="Address"
+                value={mallAddress}
+                onChange={(e)=> setMallAddress(e.target.value) }
+
               />
               {/* <label htmlFor="floatingPassword">Address</label> */}
             </div>
@@ -54,6 +80,7 @@ const AddMall = ({ history }) => {
           <button
             className="w-100 btn btn-lg btn-outline-primary btn-save"
             type="submit"
+            onClick={handleMallSubmit}
           >
             SAVE MALL
           </button>
