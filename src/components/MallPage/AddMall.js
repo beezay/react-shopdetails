@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import AddShop from "./AddShop";
-import firebase from '../../Firebase/firebase'
+import {fireStore} from '../../Firebase/firebase'
 import "./AddForm.css";
 import { withRouter } from "react-router";
 const AddMall = ({ history }) => {
@@ -22,16 +22,17 @@ const AddMall = ({ history }) => {
 
   const handleMallSubmit = (e) => {
     e.preventDefault();
-    const fireStore = firebase.database().ref('/mallInfo');
     let data = {
       mallName: mallName,
       mallAddress: mallAddress
     }
-    fireStore.push(data);
+    fireStore.collection('mallInfo').add(data)
+    
+    // fire.push(data);
     console.log(mallName, mallAddress);
     //Clearing the Form
-    setMallName('')
-    setMallAddress('')
+    // setMallName('')
+    // setMallAddress('')
   }
 
   return (

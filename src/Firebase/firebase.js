@@ -1,4 +1,5 @@
 import firebase from 'firebase'
+import 'firebase/storage'
 
 var firebaseConfig = {
     apiKey: "AIzaSyBnLYEFDKifJ63PD-rFTzXVixGhr4Wei1w",
@@ -11,9 +12,9 @@ var firebaseConfig = {
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
 
-  const projectStorage = firebase.storage();
-  const projectFireStore = firebase.firestore();
+  const storage = firebase.storage();
+  const fireStore = firebase.firestore();
   const timestamp = firebase.firestore.FieldValue.serverTimestamp
 
 //   export {projectStorage, projectFireStore, timestamp}
-  export default firebase;
+  export  {storage, fireStore};
