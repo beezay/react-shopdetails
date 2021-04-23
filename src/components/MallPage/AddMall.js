@@ -1,20 +1,19 @@
 import React, { useState } from "react";
 import AddShop from "./AddShop";
 
-import {fireStore} from '../../Firebase/firebase'
+import { fireStore } from "../../firebase/firebase";
 
 import "./AddForm.css";
 import { withRouter } from "react-router";
 import { useForm } from "react-hook-form";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
-  
 
   const {
     register,
     formState: { errors },
     handleSubmit,
-    reset
+    reset,
   } = useForm();
 
   const handleAddShop = () => {
@@ -25,16 +24,10 @@ const AddMall = ({ history }) => {
     history.push("/");
   };
 
-  // const handleOnChange = (e) => {
-  // }
-
-  
-
-  const handleMallSubmit = (data) => {
-    fireStore.collection('mallInfo').add(data)
-    reset({defaultValue:''})
-  }
-
+  const handleMallSubmit = data => {
+    fireStore.collection("mallInfo").add(data);
+    reset({ defaultValue: "" });
+  };
 
   return (
     <>
@@ -43,14 +36,6 @@ const AddMall = ({ history }) => {
           <form onSubmit={handleSubmit(handleMallSubmit)}>
             <h1 className="h3 mb-3 fw-normal">Please fill up details</h1>
             <div className="form-floating">
-              {/* <input
-                type="text"
-                className="form-control"
-                id="mall-name"
-                placeholder="Name of the Mall"
-                value={mallName}
-                onChange={(e)=> setMallName(e.target.value) }
-              /> */}
               <input
                 type="text"
                 className="form-control"
@@ -60,7 +45,9 @@ const AddMall = ({ history }) => {
                 {...register("mallName", { required: true })}
               />
               {/* <label htmlFor="floatingInput">Mall Name</label> */}
-              {errors.mallName && <p className=" mt-3 alert-warning" > Name Required</p>}
+              {errors.mallName && (
+                <p className=" mt-3 alert-warning"> Name Required</p>
+              )}
             </div>
             <div className="form-floating">
               <input
@@ -72,7 +59,9 @@ const AddMall = ({ history }) => {
                 {...register("mallAddress", { required: true })}
               />
               {/* <label htmlFor="floatingPassword">Address</label> */}
-              {errors.mallAddress && <p className="mt-3 alert-warning">Address Required</p>}
+              {errors.mallAddress && (
+                <p className="mt-3 alert-warning">Address Required</p>
+              )}
             </div>
 
             <div className="form-floating">
