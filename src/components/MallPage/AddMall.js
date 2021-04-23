@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import AddShop from "./AddShop";
+
 import {fireStore} from '../../Firebase/firebase'
+
 import "./AddForm.css";
 import { withRouter } from "react-router";
+import { useForm } from "react-hook-form";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
-  const [mallName, setMallName] = useState('')
-  const [mallAddress, setMallAddress] = useState('')
+  const [mallName, setMallName] = useState("");
+  const [mallAddress, setMallAddress] = useState("");
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
 
   const handleAddShop = () => {
     setShopAdd(true);
@@ -19,38 +28,41 @@ const AddMall = ({ history }) => {
   // const handleOnChange = (e) => {
   // }
 
+  
 
   const handleMallSubmit = (e) => {
-    e.preventDefault();
-    let data = {
-      mallName: mallName,
-      mallAddress: mallAddress
-    }
-    fireStore.collection('mallInfo').add(data)
     
-    // fire.push(data);
-    console.log(mallName, mallAddress);
-    //Clearing the Form
-    // setMallName('')
-    // setMallAddress('')
+    fireStore.collection('mallInfo').add(data)
+   
+    
   }
+
 
   return (
     <>
       <div className="container">
         <div className="add-mall-form">
-          <form onSubmit={handleMallSubmit} >
+          <form onSubmit={handleSubmit(handleMallSubmit)}>
             <h1 className="h3 mb-3 fw-normal">Please fill up details</h1>
             <div className="form-floating">
-              <input
+              {/* <input
                 type="text"
                 className="form-control"
                 id="mall-name"
                 placeholder="Name of the Mall"
                 value={mallName}
                 onChange={(e)=> setMallName(e.target.value) }
+              /> */}
+              <input
+                type="text"
+                className="form-control"
+                id="mall-name"
+                placeholder="Name of the Mall"
+                defaultValue=""
+                {...register("mallName", { required: true })}
               />
               {/* <label htmlFor="floatingInput">Mall Name</label> */}
+              {errors.mallName && <p className=" mt-3 alert-warning" > Name Required</p>}
             </div>
             <div className="form-floating">
               <input
@@ -58,11 +70,11 @@ const AddMall = ({ history }) => {
                 className="form-control"
                 id="mall-address"
                 placeholder="Address"
-                value={mallAddress}
-                onChange={(e)=> setMallAddress(e.target.value) }
-
+                defaultValue=""
+                {...register("mallAddress", { required: true })}
               />
               {/* <label htmlFor="floatingPassword">Address</label> */}
+              {errors.mallAddress && <p className="mt-3 alert-warning">Address Required</p>}
             </div>
 
             <div className="form-floating">
@@ -81,7 +93,7 @@ const AddMall = ({ history }) => {
           <button
             className="w-100 btn btn-lg btn-outline-primary btn-save"
             type="submit"
-            onClick={handleMallSubmit}
+            onClick={handleSubmit(handleMallSubmit)}
           >
             SAVE MALL
           </button>
