@@ -32,10 +32,7 @@ const AddMall = ({ history }) => {
     const fireStore = firebase.database().ref("/mallInfo");
 
     fireStore.push(data);
-    // console.log(mallName, mallAddress);
-    //Clearing the Form
-    // setMallName('')
-    // setMallAddress('')
+    
   };
 
   return (
