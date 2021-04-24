@@ -7,7 +7,7 @@ const MallsDetails = () => {
 
   const malls = useSelector(selectedAllMalls)
 
-  console.log(malls[0]);
+  // console.log(malls[0]);
 
   return (
     <div className="container mt-5">
@@ -24,7 +24,7 @@ const MallsDetails = () => {
             <h3>Peoples Plaza</h3>
             <h3>KhichhaPokhari</h3>
           </div>
-          <img src="./assets/mall.jfif" alt="" />
+          {/* <img src="./assets/mall.jfif" alt="" /> */}
         </div>
         <div className="container-fluid text-center">
           <div className="row">

@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import AddShop from "./AddShop";
 
-import { fireStore } from "../../firebase/firebase";
+import { fireStore, storage } from "../../firebase/firebase";
 
 import "./AddForm.css";
 import { withRouter } from "react-router";
 import { useForm } from "react-hook-form";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
+  const [image, setImage] = useState(null);
+  const [imageError, setImageError] = useState(null);
+
+  const imageTypes = ["image/png", "image/jpg", "image/jpeg"];
 
   const {
     register,
@@ -24,8 +28,38 @@ const AddMall = ({ history }) => {
     history.push("/");
   };
 
-  const handleMallSubmit = data => {
+  const fileUploadChange = (e) => {
+    const mallImage = e.target.files[0];
+    if (mallImage && imageTypes.includes(mallImage.type)) {
+      setImage(mallImage);
+      setImageError("");
+    } else {
+      setImage("");
+      setImageError("Please Select only  PNG/JPG");
+    }
+  };
+
+  const imageUpload = () => {
+    const uploadTask = storage.ref(`mallImages/${image.name}`).put(image);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {},
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage
+          .ref("mallImages")
+          .child(image.name)
+          .getDownloadURL()
+          .then((url) => console.log(url));
+      }
+    );
+  };
+
+  const handleMallSubmit = (data) => {
     fireStore.collection("mallInfo").add(data);
+    imageUpload();
     reset({ defaultValue: "" });
   };
 
@@ -46,7 +80,10 @@ const AddMall = ({ history }) => {
               />
               {/* <label htmlFor="floatingInput">Mall Name</label> */}
               {errors.mallName && (
-                <p className=" mt-3 alert-warning"> Name Required</p>
+                <p className="alert-warning py-1 rounded-pill w-50 mt-3 ml-auto mr-auto">
+                  {" "}
+                  Name Required
+                </p>
               )}
             </div>
             <div className="form-floating">
@@ -60,15 +97,36 @@ const AddMall = ({ history }) => {
               />
               {/* <label htmlFor="floatingPassword">Address</label> */}
               {errors.mallAddress && (
-                <p className="mt-3 alert-warning">Address Required</p>
+                <p className="mt-3 alert-warning py-1 rounded-pill w-50 ml-auto mr-auto">
+                  Address Required
+                </p>
               )}
             </div>
 
             <div className="form-floating">
               <label htmlFor="file-upload" className="image-add">
-                <input id="file-upload" type="file" />
+                <input
+                  id="file-upload"
+                  type="file"
+                  onChange={fileUploadChange}
+                  // {
+                  //   ...register("mallPic", {required:true})
+                  // }
+                />
                 <span>+</span>
               </label>
+              {image && <p> {image.name} </p>}
+              {imageError && (
+                <p className="alert-danger py-2 rounded w-50 m-auto">
+                  {" "}
+                  {imageError}{" "}
+                </p>
+              )}
+              {errors.mallPic && (
+                <p className="mt-3 alert-warning py-1 rounded-pill w-50 ml-auto mr-auto">
+                  Image Required
+                </p>
+              )}
             </div>
           </form>
           {shopAdd && <AddShop setShopAdd={setShopAdd} />}
