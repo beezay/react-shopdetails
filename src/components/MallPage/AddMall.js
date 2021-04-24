@@ -9,7 +9,9 @@ import { useForm } from "react-hook-form";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
   const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
   const [imageError, setImageError] = useState(null);
+  const [showInfo, setShowInfo] = useState(false);
 
   const imageTypes = ["image/png", "image/jpg", "image/jpeg"];
 
@@ -33,13 +35,14 @@ const AddMall = ({ history }) => {
     if (mallImage && imageTypes.includes(mallImage.type)) {
       setImage(mallImage);
       setImageError("");
+      // imageUpload();
     } else {
       setImage("");
       setImageError("Please Select only  PNG/JPG");
     }
   };
 
-  const imageUpload = () => {
+  const imageUpload = async () => {
     const uploadTask = storage.ref(`mallImages/${image.name}`).put(image);
     uploadTask.on(
       "state_changed",
@@ -47,25 +50,45 @@ const AddMall = ({ history }) => {
       (error) => {
         console.log(error);
       },
-      () => {
+
+      async () => {
         storage
           .ref("mallImages")
           .child(image.name)
           .getDownloadURL()
-          .then((url) => console.log(url));
+          .then((url) => {
+            console.log(url);
+            setImageUrl(url);
+          });
       }
     );
   };
 
-  const handleMallSubmit = (data) => {
-    fireStore.collection("mallInfo").add(data);
-    imageUpload();
+  const handleMallSubmit = async (data) => {
+    await imageUpload();
+    console.log(imageUrl);
+    const mallData = {
+      ...data,
+      mallImageUrl: imageUrl,
+    };
+    fireStore.collection("mallInfo").add(mallData);
+
+    setImage(null);
     reset({ defaultValue: "" });
+    setShowInfo(true)
+    const show = setTimeout(()=> {
+      setShowInfo(false)
+    }, 3000)
   };
 
   return (
     <>
       <div className="container">
+        {showInfo && (
+          <div className="alert alert-success my-3 w-50 ml-auto mr-auto rounded-pill text-center" role="alert">
+            New Mall has been added Sucessfully!!!
+          </div>
+        )}
         <div className="add-mall-form">
           <form onSubmit={handleSubmit(handleMallSubmit)}>
             <h1 className="h3 mb-3 fw-normal">Please fill up details</h1>
