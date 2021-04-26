@@ -3,13 +3,13 @@ import React from "react";
 const MallPreview = ({ image, preview }) => {
   console.log(image);
   return (
-    <div className="text-center">
+    <div className="d-flex align-items-center justify-content-center">
       <div
         className="card"
         style={{
           borderRadius: "50%",
-          height: "150px",
-          width: "150px",
+          height: "100px",
+          width: "100px",
           //   backgroundImage: `url(${preview})`
         }}
       >
@@ -17,10 +17,10 @@ const MallPreview = ({ image, preview }) => {
         <img
           src={preview}
           alt=""
-          style={{ height: "150px", width: "150px", borderRadius: "50%" }}
+          style={{ height: "100px", width: "100px", borderRadius: "50%" }}
         />
       </div>
-      <p className="mt-2"> {image.name} </p>
+      <p className="mt-2 ml-5"> {image.name} </p>
     </div>
   );
 };
