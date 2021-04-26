@@ -10,9 +10,12 @@ import Alert from "../common/Alert";
 import AddedAlert from "../common/AddedAlert";
 import { useDispatch } from "react-redux";
 import AddedMallDetails from "./AddedMallDetails";
+import MallPreview from "./MallPreview";
 const AddMall = ({ history }) => {
+  const [finalData, setFinalData] = useState({});
   const [shopAdd, setShopAdd] = useState(false);
   const [image, setImage] = useState(null);
+  const [imgPreview, setImgPreview] = useState();
   const [imageUrl, setImageUrl] = useState(null);
   const [imageError, setImageError] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
@@ -30,7 +33,7 @@ const AddMall = ({ history }) => {
   } = useForm();
 
   // const input = watch();
-  console.log(getValues());
+  // console.log(getValues());
 
   const handleAddShop = () => {
     setShopAdd(true);
@@ -42,6 +45,8 @@ const AddMall = ({ history }) => {
 
   const fileUploadChange = (e) => {
     const mallImage = e.target.files[0];
+    console.log(mallImage);
+    setImgPreview(URL.createObjectURL(mallImage));
     if (mallImage && imageTypes.includes(mallImage.type)) {
       setImage(mallImage);
       setImageError("");
@@ -66,16 +71,20 @@ const AddMall = ({ history }) => {
         imageName: image.name,
       },
     };
-    console.log(mallData);
+    setFinalData((prev) => ({
+      ...prev,
+      ...mallData
+    }));
+    console.log(finalData);
 
-    fireStore.collection("mallInfo").add(mallData);
+    fireStore.collection("mallInfo").add(finalData);
 
     setImage(null);
     reset({ defaultValue: "" });
     setShowInfo(true);
     const show = setTimeout(() => {
       setShowInfo(false);
-    }, 3000);
+    }, 5000);
   };
 
   return (
@@ -125,7 +134,7 @@ const AddMall = ({ history }) => {
                   />
                   <span>+</span>
                 </label>
-                {image && <p> {image.name} </p>}
+                {image && <MallPreview image={image} preview={imgPreview} /> }
                 {imageError && (
                   <p className="alert-danger py-2 rounded w-50 m-auto">
                     {" "}
