@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import {addShops } from "../../redux/MallSlice"
+import { addShops } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
 
 const AddShop = ({ setShopAdd }) => {
+  const [images, setImages] = useState();
 
-  const [images, setImages ] =useState()
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleCloseShopAdd = () => {
     setShopAdd(false);
@@ -23,25 +22,21 @@ const AddShop = ({ setShopAdd }) => {
 
   const handleShopImageAdd = (e) => {
     // console.log(e.target.files);
-    
-   
-    const imageList =Object.values( e.target.files)
+
+    const imageList = Object.values(e.target.files);
     console.log(imageList);
-    setImages(imageList)
-    
+    setImages(imageList);
   };
 
   const handleShopSubmit = (data) => {
-    const id = Date.now()
-    console.log("Shop Added", images );
+    const id = Date.now();
+    console.log("Shop Added", images);
     const shopData = {
       id: id,
       ...data,
-      shopImages: [
-        ...images
-      ]
-    }
-    dispatch(addShops(shopData))
+      shopImages: [...images],
+    };
+    dispatch(addShops(shopData));
     setShopAdd(false);
     reset({ defaultValue: "" });
   };
@@ -84,9 +79,6 @@ const AddShop = ({ setShopAdd }) => {
         </div>
 
         <div className="form-floating">
-          <span className="py-0 mt-2">
-            First Image will be shown as Thumbnail
-          </span>
           <label htmlFor="file-uploads" className="image-add-shop">
             <input
               id="file-uploads"
@@ -94,10 +86,13 @@ const AddShop = ({ setShopAdd }) => {
               multiple
               onChange={handleShopImageAdd}
             />
-            <span>Upload IMAGE + </span>
+            <span>Upload IMAGEs + </span>
           </label>
+          <span className="py-0 mt-2 text-info font-weight-light">
+            First Image will be shown as Thumbnail
+          </span>
         </div>
-        <button className="btn btn-lg btn-warning " type="submit">
+        <button className="btn btn-lg btn-warning mt-2 " type="submit">
           SAVE SHOP
         </button>
       </form>

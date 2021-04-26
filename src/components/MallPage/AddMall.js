@@ -35,8 +35,11 @@ const AddMall = ({ history }) => {
   // const input = watch();
   // console.log(getValues());
 
-  const handleAddShop = () => {
-    setShopAdd(true);
+  const handleAddShop = (val) => {
+    if(shopAdd) {
+      setShopAdd(val);
+    }
+    setShopAdd(val);
   };
 
   const handleCancelAddMall = () => {
@@ -145,10 +148,12 @@ const AddMall = ({ history }) => {
               </div>
             </form>
             {shopAdd && <AddShop setShopAdd={setShopAdd} />}
-            <div className="add-shop" onClick={handleAddShop}>
-              <p className="add-shop-p">
+            <div className="add-shop">
+              {shopAdd ? <p className="add-shop-p" onClick={() => handleAddShop(false)}>
+                Cancel{" "}
+              </p> : <p className="add-shop-p" onClick={() => handleAddShop(true)} >
                 Add Shop <span>+</span>{" "}
-              </p>
+              </p>}
             </div>
             <button
               className="w-100 btn btn-lg btn-outline-primary btn-save"
