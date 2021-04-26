@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import Alert from "../common/Alert";
 import AddedAlert from "../common/AddedAlert";
 import { useDispatch } from "react-redux";
+import AddedMallDetails from "./AddedMallDetails";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
   const [image, setImage] = useState(null);
@@ -17,13 +18,19 @@ const AddMall = ({ history }) => {
   const [showInfo, setShowInfo] = useState(false);
 
   const imageTypes = ["image/png", "image/jpg", "image/jpeg"];
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const {
     register,
+
     formState: { errors },
     handleSubmit,
     reset,
+    watch,
+    getValues,
   } = useForm();
+
+  // const input = watch();
+  console.log(getValues());
 
   const handleAddShop = () => {
     setShopAdd(true);
@@ -45,36 +52,22 @@ const AddMall = ({ history }) => {
     }
   };
 
-  const imageUpload = async () => {
-    const uploadTask = storage.ref(`mallImages/${image.name}`).put(image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {},
-      (error) => {
-        console.log(error);
-      },
-
-      async () => {
-        storage
-          .ref("mallImages")
-          .child(image.name)
-          .getDownloadURL()
-          .then((url) => {
-            console.log(url);
-            setImageUrl(url);
-          });
-      }
-    );
-  };
-
   const handleMallSubmit = async (data) => {
-    await imageUpload();
-    console.log(imageUrl);
+    await storage.ref(`mallImages/${image.name}`).put(image);
+    const imgUrl = await storage
+      .ref("mallImages")
+      .child(image.name)
+      .getDownloadURL();
+
     const mallData = {
       ...data,
-      mallImageUrl: imageUrl,
+      mallImage: {
+        imageUrl: imgUrl,
+        imageName: image.name,
+      },
     };
-    
+    console.log(mallData);
+
     fireStore.collection("mallInfo").add(mallData);
 
     setImage(null);
@@ -87,80 +80,85 @@ const AddMall = ({ history }) => {
 
   return (
     <>
-      <div className="container">
+      <div className="container-fluid">
         {showInfo && (
           <AddedAlert title="New Mall has been added Sucessfully!!!" />
         )}
-        <div className="add-mall-form">
-          <form onSubmit={handleSubmit(handleMallSubmit)}>
-            <h1 className="h3 mb-3 fw-normal">Please fill up details</h1>
-            <div className="form-floating">
-              <input
-                type="text"
-                className="form-control"
-                id="mall-name"
-                placeholder="Name of the Mall"
-                defaultValue=""
-                {...register("mallName", { required: true })}
-              />
-              {/* <label htmlFor="floatingInput">Mall Name</label> */}
-              {errors.mallName && <Alert title="Mall Name is Required!" />}
-            </div>
-            <div className="form-floating">
-              <input
-                type="text"
-                className="form-control"
-                id="mall-address"
-                placeholder="Address"
-                defaultValue=""
-                {...register("mallAddress", { required: true })}
-              />
-              {/* <label htmlFor="floatingPassword">Address</label> */}
-              {errors.mallAddress && <Alert title="Address Required!" />}
-            </div>
-
-            <div className="form-floating">
-              <label htmlFor="file-upload" className="image-add">
+        <div className="row">
+          <div className="add-mall-form col-4">
+            <form onSubmit={handleSubmit(handleMallSubmit)}>
+              <h1 className="h3 mb-3 fw-normal">Please fill up details</h1>
+              <div className="form-floating">
                 <input
-                  id="file-upload"
-                  type="file"
-                  onChange={fileUploadChange}
-                  // {
-                  //   ...register("mallPic", {required:true})
-                  // }
+                  type="text"
+                  className="form-control"
+                  id="mall-name"
+                  placeholder="Name of the Mall"
+                  defaultValue=""
+                  {...register("mallName", { required: true })}
                 />
-                <span>+</span>
-              </label>
-              {image && <p> {image.name} </p>}
-              {imageError && (
-                <p className="alert-danger py-2 rounded w-50 m-auto">
-                  {" "}
-                  {imageError}{" "}
-                </p>
-              )}
-              {errors.mallPic && <Alert title="Image Required!" />}
+                {/* <label htmlFor="floatingInput">Mall Name</label> */}
+                {errors.mallName && <Alert title="Mall Name is Required!" />}
+              </div>
+              <div className="form-floating">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="mall-address"
+                  placeholder="Address"
+                  defaultValue=""
+                  {...register("mallAddress", { required: true })}
+                />
+                {/* <label htmlFor="floatingPassword">Address</label> */}
+                {errors.mallAddress && <Alert title="Address Required!" />}
+              </div>
+
+              <div className="form-floating">
+                <label htmlFor="file-upload" className="image-add">
+                  <input
+                    id="file-upload"
+                    type="file"
+                    onChange={fileUploadChange}
+                    // {
+                    //   ...register("mallPic", {required:true})
+                    // }
+                  />
+                  <span>+</span>
+                </label>
+                {image && <p> {image.name} </p>}
+                {imageError && (
+                  <p className="alert-danger py-2 rounded w-50 m-auto">
+                    {" "}
+                    {imageError}{" "}
+                  </p>
+                )}
+                {errors.mallPic && <Alert title="Image Required!" />}
+              </div>
+            </form>
+            {shopAdd && <AddShop setShopAdd={setShopAdd} />}
+            <div className="add-shop" onClick={handleAddShop}>
+              <p>
+                Add Shop <span>+</span>{" "}
+              </p>
             </div>
-          </form>
-          {shopAdd && <AddShop setShopAdd={setShopAdd} />}
-          <div className="add-shop" onClick={handleAddShop}>
-            <p>
-              Add Shop <span>+</span>{" "}
-            </p>
+            <button
+              className="w-100 btn btn-lg btn-outline-primary btn-save"
+              type="submit"
+              onClick={handleSubmit(handleMallSubmit)}
+            >
+              SAVE MALL
+            </button>
+            <button
+              className="w-100 btn btn-lg btn-outline-warning btn-cancel"
+              type="button"
+              onClick={handleCancelAddMall}
+            >
+              CANCEL
+            </button>
           </div>
-          <button
-            className="w-100 btn btn-lg btn-outline-primary btn-save"
-            type="submit"
-            onClick={handleSubmit(handleMallSubmit)}
-          >
-            SAVE MALL
-          </button>
-          <button
-            className="w-100 btn btn-lg btn-outline-warning btn-cancel"
-            type="button"
-            onClick={handleCancelAddMall}
-          >
-            CANCEL
-          </button>
+          {/* <div className="col-6">
+            <AddedMallDetails />
+          </div> */}
         </div>
       </div>
     </>

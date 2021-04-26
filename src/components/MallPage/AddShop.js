@@ -1,8 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import {addShops } from "../../redux/MallSlice"
+import Alert from "../common/Alert";
 
 const AddShop = ({ setShopAdd }) => {
+
+  const [images, setImages ] =useState()
+
+  const dispatch = useDispatch()
+
   const handleCloseShopAdd = () => {
     setShopAdd(false);
+  };
+
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm();
+
+  const handleShopImageAdd = (e) => {
+    // console.log(e.target.files);
+    
+   
+    const imageList =Object.values( e.target.files)
+    console.log(imageList);
+    setImages(imageList)
+    
+  };
+
+  const handleShopSubmit = (data) => {
+    const id = Date.now()
+    console.log("Shop Added", images );
+    const shopData = {
+      id: id,
+      ...data,
+      shopImages: [
+        ...images
+      ]
+    }
+    dispatch(addShops(shopData))
+    setShopAdd(false);
+    reset({ defaultValue: "" });
   };
 
   return (
@@ -16,29 +57,43 @@ const AddShop = ({ setShopAdd }) => {
         </div>
         <hr />
       </div>
-      <form>
+      <form onSubmit={handleSubmit(handleShopSubmit)}>
         <div className="form-floating">
           <input
             type="text"
             className="form-control"
             id="floatingInput"
+            defaultValue=""
             placeholder="Name of the Shop"
+            {...register("shopName", { required: true })}
           />
           {/* <label htmlFor="floatingInput">Mall Name</label> */}
+          {errors.shopName && <Alert title="Shop Name is Required!!" />}
         </div>
         <div className="form-floating">
           <textarea
             type="text"
             className="form-control"
             id="floatingPassword"
+            defaultValue=""
             placeholder="Description"
+            {...register("shopDesc", { required: true })}
           />
           {/* <label htmlFor="floatingPassword">Address</label> */}
+          {errors.shopDesc && <Alert title="Please write about Shop" />}
         </div>
 
         <div className="form-floating">
-          <label htmlFor="file-upload" className="image-add-shop">
-            <input id="file-upload" type="file" />
+          <span className="py-0 mt-2">
+            First Image will be shown as Thumbnail
+          </span>
+          <label htmlFor="file-uploads" className="image-add-shop">
+            <input
+              id="file-uploads"
+              type="file"
+              multiple
+              onChange={handleShopImageAdd}
+            />
             <span>Upload IMAGE + </span>
           </label>
         </div>
