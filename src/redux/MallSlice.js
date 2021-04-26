@@ -37,5 +37,6 @@ const mallSlice = createSlice({
 export const { fetchMalls, addShops } = mallSlice.actions;
 
 export const selectedAllMalls = state => state.malls.malls
+export const selectAddedShops = state => state.malls.addedShops
 
 export default mallSlice.reducer;

@@ -99,7 +99,7 @@ label.image-add-shop:hover {
 }
 
 .add-shop:hover p {
-  color: #2d3436;
+  color: #2c2c54;
 }
 
 .add-shop p {
@@ -151,4 +151,8 @@ label.image-add-shop:hover {
 
 .top-details hr {
   margin-top: 0;
+}
+
+#dynamic-btn.disabled {
+  cursor: not-allowed;
 }

@@ -8,9 +8,10 @@ import { withRouter } from "react-router";
 import { useForm } from "react-hook-form";
 import Alert from "../common/Alert";
 import AddedAlert from "../common/AddedAlert";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AddedMallDetails from "./AddedMallDetails";
 import MallPreview from "./MallPreview";
+import { selectAddedShops } from "../../redux/MallSlice";
 const AddMall = ({ history }) => {
   const [finalData, setFinalData] = useState({});
   const [shopAdd, setShopAdd] = useState(false);
@@ -19,6 +20,9 @@ const AddMall = ({ history }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [imageError, setImageError] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const addedShopsDetails = useSelector(selectAddedShops);
 
   const imageTypes = ["image/png", "image/jpg", "image/jpeg"];
   const dispatch = useDispatch();
@@ -36,7 +40,7 @@ const AddMall = ({ history }) => {
   // console.log(getValues());
 
   const handleAddShop = (val) => {
-    if(shopAdd) {
+    if (shopAdd) {
       setShopAdd(val);
     }
     setShopAdd(val);
@@ -48,7 +52,7 @@ const AddMall = ({ history }) => {
 
   const fileUploadChange = (e) => {
     const mallImage = e.target.files[0];
-    console.log(mallImage);
+    // console.log(mallImage);
     setImgPreview(URL.createObjectURL(mallImage));
     if (mallImage && imageTypes.includes(mallImage.type)) {
       setImage(mallImage);
@@ -60,7 +64,23 @@ const AddMall = ({ history }) => {
     }
   };
 
+  console.log(addedShopsDetails);
+
+  const shopUpload = async () => {
+    addedShopsDetails.map((shop) =>
+      shop.shopImages.map((item) =>
+        storage.ref(`shopImages/${item.name}`).put(item)
+      )
+    );
+  };
+
   const handleMallSubmit = async (data) => {
+    setIsSubmitting(true);
+    if (addedShopsDetails.length > 0) {
+      console.log("Loop Entered");
+      shopUpload();
+    }
+
     await storage.ref(`mallImages/${image.name}`).put(image);
     const imgUrl = await storage
       .ref("mallImages")
@@ -76,11 +96,11 @@ const AddMall = ({ history }) => {
     };
     setFinalData((prev) => ({
       ...prev,
-      ...mallData
+      ...mallData,
     }));
-    console.log(finalData);
+    console.log(mallData);
 
-    fireStore.collection("mallInfo").add(finalData);
+    fireStore.collection("mallInfo").add(mallData);
 
     setImage(null);
     reset({ defaultValue: "" });
@@ -88,7 +108,14 @@ const AddMall = ({ history }) => {
     const show = setTimeout(() => {
       setShowInfo(false);
     }, 5000);
+    setIsSubmitting(false);
   };
+
+  let submitBtnClassName = "w-100 btn btn-lg btn-outline-primary btn-save";
+
+  if (isSubmitting) {
+    submitBtnClassName += " disabled";
+  }
 
   return (
     <>
@@ -99,7 +126,9 @@ const AddMall = ({ history }) => {
         <div className="row">
           <div className="add-mall-form col-4">
             <form onSubmit={handleSubmit(handleMallSubmit)}>
-              <h1 className="h3 mb-3 fw-normal">Enter Your Mall Details Here!!!</h1>
+              <h1 className="h3 mb-3 fw-normal">
+                Enter Your Mall Details Here!!!
+              </h1>
               <div className="form-floating">
                 <input
                   type="text"
@@ -137,7 +166,7 @@ const AddMall = ({ history }) => {
                   />
                   <span>+</span>
                 </label>
-                {image && <MallPreview image={image} preview={imgPreview} /> }
+                {image && <MallPreview image={image} preview={imgPreview} />}
                 {imageError && (
                   <p className="alert-danger py-2 rounded w-50 m-auto">
                     {" "}
@@ -147,20 +176,31 @@ const AddMall = ({ history }) => {
                 {errors.mallPic && <Alert title="Image Required!" />}
               </div>
             </form>
-            {shopAdd && <AddShop setShopAdd={setShopAdd} />}
+            {shopAdd && (
+              <AddShop
+                setShopAdd={setShopAdd}
+                shopDetails={addedShopsDetails}
+              />
+            )}
             <div className="add-shop">
-              {shopAdd ? <p className="add-shop-p" onClick={() => handleAddShop(false)}>
-                Cancel{" "}
-              </p> : <p className="add-shop-p" onClick={() => handleAddShop(true)} >
-                Add Shop <span>+</span>{" "}
-              </p>}
+              {shopAdd ? (
+                <p className="add-shop-p" onClick={() => handleAddShop(false)}>
+                  Cancel{" "}
+                </p>
+              ) : (
+                <p className="add-shop-p" onClick={() => handleAddShop(true)}>
+                  Add Shop <span>+</span>{" "}
+                </p>
+              )}
             </div>
             <button
-              className="w-100 btn btn-lg btn-outline-primary btn-save"
+            id="dynamic-btn"
+              className={submitBtnClassName}
               type="submit"
               onClick={handleSubmit(handleMallSubmit)}
+              disabled={isSubmitting}
             >
-              SAVE MALL
+              {isSubmitting ? "Saving..." : "SAVE MALL"}
             </button>
             <button
               className="w-100 btn btn-lg btn-outline-warning btn-cancel"

@@ -4,7 +4,10 @@ import { useDispatch } from "react-redux";
 import { addShops } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
 
-const AddShop = ({ setShopAdd }) => {
+const AddShop = ({ setShopAdd, shopDetails }) => {
+
+  console.log(shopDetails);
+
   const [images, setImages] = useState();
 
   const dispatch = useDispatch();
