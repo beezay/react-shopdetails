@@ -146,7 +146,7 @@ const AddMall = ({ history }) => {
             </form>
             {shopAdd && <AddShop setShopAdd={setShopAdd} />}
             <div className="add-shop" onClick={handleAddShop}>
-              <p>
+              <p className="add-shop-p">
                 Add Shop <span>+</span>{" "}
               </p>
             </div>
