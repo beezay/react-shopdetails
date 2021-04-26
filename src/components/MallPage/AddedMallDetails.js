@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import ImagePopup from "./ImagePopup";
 
 const AddedMallDetails = ({ addedShopsDetails }) => {
-  const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(null);
 
-  const handleImagePopup = () => {
-    setShowPopup(true);
+  const handleImagePopup = (id) => {
+    setShowPopup(id);
     // setTimeout(() => {
     //   setShowPopup(false);
     // }, 3000);
@@ -37,16 +37,16 @@ const AddedMallDetails = ({ addedShopsDetails }) => {
               <th scope="row">{shop.shopName}</th>
               <td>{shop.shopDesc}</td>
               <tr className="d-flex flex-column">
-                <td onClick={handleImagePopup} className="image-show"> Images</td>
-                {showPopup && (
+                <td onClick={()=>handleImagePopup(shop.id)} className="image-show">
+                  {" "}
+                  {shop.shopName} Images
+                </td>
+                {showPopup === shop.id && (
                   <ImagePopup
                     shopImages={shop.shopImages}
                     setShowPopup={setShowPopup}
                   />
                 )}
-
-                {/* <td>Image Preview</td>
-                <td>Image Preview</td> */}
               </tr>
 
               <td>
