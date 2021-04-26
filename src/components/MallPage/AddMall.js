@@ -99,7 +99,7 @@ const AddMall = ({ history }) => {
         <div className="row">
           <div className="add-mall-form col-4">
             <form onSubmit={handleSubmit(handleMallSubmit)}>
-              <h1 className="h3 mb-3 fw-normal">Please fill up details</h1>
+              <h1 className="h3 mb-3 fw-normal">Enter Your Mall Details Here!!!</h1>
               <div className="form-floating">
                 <input
                   type="text"
