@@ -194,7 +194,7 @@ const AddMall = ({ history }) => {
               )}
             </div>
             <button
-            id="dynamic-btn"
+              id="dynamic-btn"
               className={submitBtnClassName}
               type="submit"
               onClick={handleSubmit(handleMallSubmit)}
@@ -210,9 +210,11 @@ const AddMall = ({ history }) => {
               CANCEL
             </button>
           </div>
-          {/* <div className="col-6">
-            <AddedMallDetails />
-          </div> */}
+          {addedShopsDetails.length > 0 && (
+            <div className="col-6">
+              <AddedMallDetails addedShopsDetails={addedShopsDetails} />
+            </div>
+          )}
         </div>
       </div>
     </>

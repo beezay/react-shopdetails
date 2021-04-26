@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+import ImagePopup from "./ImagePopup";
 
-const AddedMallDetails = () => {
+const AddedMallDetails = ({ addedShopsDetails }) => {
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleImagePopup = () => {
+    setShowPopup(true);
+    // setTimeout(() => {
+    //   setShowPopup(false);
+    // }, 3000);
+  };
+
   return (
     <>
       <div className="d-flex justify-content-around align-items-center">
@@ -22,19 +32,28 @@ const AddedMallDetails = () => {
           </tr>
         </thead>
         <tbody>
-          <tr className="table">
-            <th scope="row">New Shop</th>
-            <td>Mobile Shop for All</td>
-            <tr className="d-flex flex-column">
-              <td>Image Preview</td>
-              <td>Image Preview</td>
-              <td>Image Preview</td>
-            </tr>
+          {addedShopsDetails.map((shop) => (
+            <tr className="table">
+              <th scope="row">{shop.shopName}</th>
+              <td>{shop.shopDesc}</td>
+              <tr className="d-flex flex-column">
+                <td onClick={handleImagePopup} className="image-show"> Images</td>
+                {showPopup && (
+                  <ImagePopup
+                    shopImages={shop.shopImages}
+                    setShowPopup={setShowPopup}
+                  />
+                )}
 
-            <td>
-              <i className="fas fa-trash" />
-            </td>
-          </tr>
+                {/* <td>Image Preview</td>
+                <td>Image Preview</td> */}
+              </tr>
+
+              <td>
+                <i className="fas fa-trash shop-delete" />
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </>
