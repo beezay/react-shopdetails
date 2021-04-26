@@ -6,6 +6,9 @@ import { fireStore, storage } from "../../firebase/firebase";
 import "./AddForm.css";
 import { withRouter } from "react-router";
 import { useForm } from "react-hook-form";
+import Alert from "../common/Alert";
+import AddedAlert from "../common/AddedAlert";
+import { useDispatch } from "react-redux";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
   const [image, setImage] = useState(null);
@@ -14,7 +17,7 @@ const AddMall = ({ history }) => {
   const [showInfo, setShowInfo] = useState(false);
 
   const imageTypes = ["image/png", "image/jpg", "image/jpeg"];
-
+  const dispatch = useDispatch()
   const {
     register,
     formState: { errors },
@@ -71,23 +74,22 @@ const AddMall = ({ history }) => {
       ...data,
       mallImageUrl: imageUrl,
     };
+    
     fireStore.collection("mallInfo").add(mallData);
 
     setImage(null);
     reset({ defaultValue: "" });
-    setShowInfo(true)
-    const show = setTimeout(()=> {
-      setShowInfo(false)
-    }, 3000)
+    setShowInfo(true);
+    const show = setTimeout(() => {
+      setShowInfo(false);
+    }, 3000);
   };
 
   return (
     <>
       <div className="container">
         {showInfo && (
-          <div className="alert alert-success my-3 w-50 ml-auto mr-auto rounded-pill text-center" role="alert">
-            New Mall has been added Sucessfully!!!
-          </div>
+          <AddedAlert title="New Mall has been added Sucessfully!!!" />
         )}
         <div className="add-mall-form">
           <form onSubmit={handleSubmit(handleMallSubmit)}>
@@ -102,12 +104,7 @@ const AddMall = ({ history }) => {
                 {...register("mallName", { required: true })}
               />
               {/* <label htmlFor="floatingInput">Mall Name</label> */}
-              {errors.mallName && (
-                <p className="alert-warning py-1 rounded-pill w-50 mt-3 ml-auto mr-auto">
-                  {" "}
-                  Name Required
-                </p>
-              )}
+              {errors.mallName && <Alert title="Mall Name is Required!" />}
             </div>
             <div className="form-floating">
               <input
@@ -119,11 +116,7 @@ const AddMall = ({ history }) => {
                 {...register("mallAddress", { required: true })}
               />
               {/* <label htmlFor="floatingPassword">Address</label> */}
-              {errors.mallAddress && (
-                <p className="mt-3 alert-warning py-1 rounded-pill w-50 ml-auto mr-auto">
-                  Address Required
-                </p>
-              )}
+              {errors.mallAddress && <Alert title="Address Required!" />}
             </div>
 
             <div className="form-floating">
@@ -145,11 +138,7 @@ const AddMall = ({ history }) => {
                   {imageError}{" "}
                 </p>
               )}
-              {errors.mallPic && (
-                <p className="mt-3 alert-warning py-1 rounded-pill w-50 ml-auto mr-auto">
-                  Image Required
-                </p>
-              )}
+              {errors.mallPic && <Alert title="Image Required!" />}
             </div>
           </form>
           {shopAdd && <AddShop setShopAdd={setShopAdd} />}
