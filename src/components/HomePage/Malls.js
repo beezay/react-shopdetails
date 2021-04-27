@@ -1,14 +1,14 @@
 import React from "react";
 import { useHistory } from "react-router";
+import Card from "../common/Card";
 import SearchMall from "../Search/SearchMall";
 
-const Malls = () => {
-  
-  const history = useHistory()
+const Malls = ({ allMalls }) => {
+  const history = useHistory();
 
-  const handleInfoClick = () => {
-    history.push('/malls/1');
-  }
+  const handleInfoClick = (id) => {
+    history.push("/malls/1");
+  };
 
   return (
     <div className="malls-wrapper">
@@ -17,27 +17,18 @@ const Malls = () => {
         {/* <SearchMall /> */}
       </div>
       <div className="image-wrapper">
-        <div className="image-container" onClick={handleInfoClick} >
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
-          </div>
-          <img src="./assets/mall.jfif" alt="" />
-        </div>
-        <div className="image-container" onClick={handleInfoClick}>
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
-          </div>
-          <img src="./assets/mall2.jfif" alt="" />
-        </div>
-        <div className="image-container" onClick={handleInfoClick}>
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
-          </div>
-          <img src="./assets/mall.jfif" alt="" />
-        </div>
+        {allMalls.map((mall) => (
+          <Card
+            className="image-container"
+            func={handleInfoClick}
+            name={mall.mallName}
+            address={mall.mallAddress}
+            imgUrl={mall.mallImage.imageUrl}
+            key={mall.id}
+          />
+        ))}
+        {/* <Card className="image-container" func={handleInfoClick} />
+        <Card className="image-container" func={handleInfoClick} /> */}
       </div>
     </div>
   );

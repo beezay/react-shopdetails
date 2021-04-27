@@ -1,9 +1,9 @@
 import React from "react";
 import { useHistory } from "react-router";
+import Card from "../common/Card";
 
-const Shops = () => {
-
-  const history = useHistory()
+const Shops = ({ shops }) => {
+  const history = useHistory();
 
   return (
     <div className="shops-wrapper">
@@ -11,27 +11,16 @@ const Shops = () => {
         <h2>SHOPS</h2>
       </div>
       <div className="image-wrapper">
-        <div className="image-container">
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
-          </div>
-          <img src="./assets/mall.jfif" alt="" />
-        </div>
-        <div className="image-container">
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
-          </div>
-          <img src="./assets/mall2.jfif" alt="" />
-        </div>
-        <div className="image-container">
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
-          </div>
-          <img src="./assets/mall.jfif" alt="" />
-        </div>
+        {shops.map((shop) => (
+          <Card
+            className="image-container"
+            shop={shop}
+            name={shop.shops.shopName}
+            imgUrl={shop.shops.shopImg}
+            address={shop.mallName}
+            key={shop.id}
+          />
+        ))}
       </div>
     </div>
   );

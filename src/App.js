@@ -27,7 +27,7 @@ const App = () => {
             payload: doc.data(),
           });
         });
-      });
+      }, []);
 
     console.log(data);
   });

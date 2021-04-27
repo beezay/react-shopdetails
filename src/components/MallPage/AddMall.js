@@ -11,13 +11,11 @@ import AddedAlert from "../common/AddedAlert";
 import { useDispatch, useSelector } from "react-redux";
 import AddedMallDetails from "./AddedMallDetails";
 import MallPreview from "./MallPreview";
-import { selectAddedShops } from "../../redux/MallSlice";
+import { selectAddedShops, removeShops } from "../../redux/MallSlice";
 const AddMall = ({ history }) => {
-  const [finalData, setFinalData] = useState({});
   const [shopAdd, setShopAdd] = useState(false);
   const [image, setImage] = useState(null);
   const [imgPreview, setImgPreview] = useState();
-  const [shopData, setShopData] = useState({});
   const [imageError, setImageError] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,12 +30,7 @@ const AddMall = ({ history }) => {
     formState: { errors },
     handleSubmit,
     reset,
-    watch,
-    getValues,
   } = useForm();
-
-  // const input = watch();
-  // console.log(getValues());
 
   const handleAddShop = (val) => {
     if (shopAdd) {
@@ -52,20 +45,17 @@ const AddMall = ({ history }) => {
 
   const fileUploadChange = (e) => {
     const mallImage = e.target.files[0];
-    // console.log(mallImage);
+
     setImgPreview(URL.createObjectURL(mallImage));
     if (mallImage && imageTypes.includes(mallImage.type)) {
       setImage(mallImage);
       setImageError("");
-      // imageUpload();
     } else {
       setImage("");
       setImageError("Please Select only  PNG/JPG");
     }
   };
 
-  // console.log(addedShopsDetails);
-  let shopUrls;
   const shopUpload = async () => {
     await Promise.all(
       addedShopsDetails.map((shop) =>
@@ -134,6 +124,7 @@ const AddMall = ({ history }) => {
     const show = setTimeout(() => {
       setShowInfo(false);
     }, 5000);
+    dispatch(removeShops());
     setIsSubmitting(false);
   };
 
@@ -232,6 +223,7 @@ const AddMall = ({ history }) => {
               className="w-100 btn btn-lg btn-outline-warning btn-cancel"
               type="button"
               onClick={handleCancelAddMall}
+              disabled={isSubmitting}
             >
               CANCEL
             </button>
