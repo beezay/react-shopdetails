@@ -17,7 +17,7 @@ const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
   const [image, setImage] = useState(null);
   const [imgPreview, setImgPreview] = useState();
-  const [imageUrl, setImageUrl] = useState(null);
+  const [shopData, setShopData] = useState({});
   const [imageError, setImageError] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -64,7 +64,7 @@ const AddMall = ({ history }) => {
     }
   };
 
-  console.log(addedShopsDetails);
+  // console.log(addedShopsDetails);
   let shopUrls;
   const shopUpload = async () => {
     await Promise.all(
@@ -86,16 +86,29 @@ const AddMall = ({ history }) => {
         )
       )
     );
+    console.log(shopImageUrl);
     return shopImageUrl;
+  };
+
+  const shopDetails = (imgArr) => {
+    console.log("ShopDetails", imgArr);
+    const shopArr = addedShopsDetails.map((shop, idx) => ({
+      ...shop,
+      shopImages: imgArr[idx],
+    }));
+    return shopArr;
   };
 
   const handleMallSubmit = async (data) => {
     setIsSubmitting(true);
-    let shopImgArr
+    let shopImgArr;
     if (addedShopsDetails.length > 0) {
       console.log("Loop Entered");
-      shopImgArr = shopUpload();
+      shopImgArr = await shopUpload();
     }
+
+    const shopArr = shopDetails(shopImgArr);
+
     await storage.ref(`mallImages/${image.name}`).put(image);
     const imgUrl = await storage
       .ref("mallImages")
@@ -108,11 +121,9 @@ const AddMall = ({ history }) => {
         imageUrl: imgUrl,
         imageName: image.name,
       },
+      shops: shopArr,
     };
-    setFinalData((prev) => ({
-      ...prev,
-      ...mallData,
-    }));
+
     console.log(mallData);
 
     fireStore.collection("mallInfo").add(mallData);

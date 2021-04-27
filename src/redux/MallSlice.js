@@ -24,6 +24,16 @@ const mallSlice = createSlice({
       }
     },
 
+    shopWithUrl: (state, action) => {
+      return {
+        ...state,
+        addedShops: [
+          ...state.adddedShops
+
+        ]
+      }
+    },
+
     fetchMalls: (state, action) => {
       console.log("Malls Fetched", action.payload);
       return {
