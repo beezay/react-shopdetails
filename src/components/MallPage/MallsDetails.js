@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router";
 import { selectedAllMalls } from "../../redux/MallSlice";
 import Malls from "../HomePage/Malls";
 import './Details.css'
@@ -7,7 +8,11 @@ const MallsDetails = () => {
 
   const malls = useSelector(selectedAllMalls)
 
-  // console.log(malls[0]);
+  const id = useParams()
+  console.log('ID', id);
+
+  const mall = malls.filter(x=> x.id !== id)
+  console.log(mall);
 
   return (
     <div className="container mt-5">

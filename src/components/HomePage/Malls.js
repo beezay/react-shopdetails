@@ -6,8 +6,9 @@ import SearchMall from "../Search/SearchMall";
 const Malls = ({ allMalls }) => {
   const history = useHistory();
 
-  const handleInfoClick = (id) => {
-    history.push("/malls/1");
+  const handleInfoClick = (mallId) => {
+    console.log(mallId);
+    history.push(`malls/${mallId}`);
   };
 
   return (
@@ -25,6 +26,8 @@ const Malls = ({ allMalls }) => {
             address={mall.mallAddress}
             imgUrl={mall.mallImage.imageUrl}
             key={mall.id}
+            id={mall.id}
+            // onClick={()=>handleInfoClick(mall.id)}
           />
         ))}
         {/* <Card className="image-container" func={handleInfoClick} />

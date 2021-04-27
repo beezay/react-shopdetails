@@ -24,7 +24,10 @@ const App = () => {
         snapshot.forEach((doc) => {
           dispatch({
             type: fetchMalls,
-            payload: doc.data(),
+            payload: {
+              ...doc.data(),
+              id: doc.id
+            },
           });
         });
       }, []);
