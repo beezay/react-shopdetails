@@ -1,0 +1,23 @@
+{
+    "emmet.syntaxProfiles": {
+        "javascript": "jsx"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "files.associations": {
+        "*.ejs": "html",
+        ".*js": "html"
+    },
+    "emmet.showSuggestionsAsSnippets": true,
+    "emmet.triggerExpansionOnTab": true,
+    "editor.quickSuggestionsDelay": 5,
+    "editor.quickSuggestions": true,
+    "html-css-class-completion.enableEmmetSupport": true,
+    "emmet.preferences": {
+    
+    },
+    "emmet.includeLanguages": {
+        "javascript": "javascriptreact"
+    }
+}

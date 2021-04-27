@@ -1,7 +1,7 @@
 import React from "react";
 
 const ImagePopup = ({ shopImages, setShowPopup }) => {
-    console.log(shopImages);
+  console.log(shopImages);
   return (
     <div className="image-popup card-img w-50 shadow">
       <div className="close-popup inline-block">

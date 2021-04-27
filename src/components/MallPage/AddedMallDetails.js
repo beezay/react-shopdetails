@@ -37,7 +37,10 @@ const AddedMallDetails = ({ addedShopsDetails }) => {
               <th scope="row">{shop.shopName}</th>
               <td>{shop.shopDesc}</td>
               <tr className="d-flex flex-column">
-                <td onClick={()=>handleImagePopup(shop.id)} className="image-show">
+                <td
+                  onClick={() => handleImagePopup(shop.id)}
+                  className="image-show"
+                >
                   {" "}
                   {shop.shopName} Images
                 </td>
@@ -56,6 +59,7 @@ const AddedMallDetails = ({ addedShopsDetails }) => {
           ))}
         </tbody>
       </table>
+
     </>
   );
 };

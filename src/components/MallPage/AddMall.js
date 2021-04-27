@@ -65,22 +65,37 @@ const AddMall = ({ history }) => {
   };
 
   console.log(addedShopsDetails);
-
+  let shopUrls;
   const shopUpload = async () => {
-    addedShopsDetails.map((shop) =>
-      shop.shopImages.map((item) =>
-        storage.ref(`shopImages/${item.name}`).put(item)
+    await Promise.all(
+      addedShopsDetails.map((shop) =>
+        Promise.all(
+          shop.shopImages.map((item) =>
+            storage.ref(`shopImages/${item.name}`).put(item)
+          )
+        )
       )
     );
+
+    const shopImageUrl = await Promise.all(
+      addedShopsDetails.map((shop) =>
+        Promise.all(
+          shop.shopImages.map((item) =>
+            storage.ref(`shopImages/${item.name}`).getDownloadURL()
+          )
+        )
+      )
+    );
+    return shopImageUrl;
   };
 
   const handleMallSubmit = async (data) => {
     setIsSubmitting(true);
+    let shopImgArr
     if (addedShopsDetails.length > 0) {
       console.log("Loop Entered");
-      shopUpload();
+      shopImgArr = shopUpload();
     }
-
     await storage.ref(`mallImages/${image.name}`).put(image);
     const imgUrl = await storage
       .ref("mallImages")
