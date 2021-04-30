@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router";
 import { selectedAllMalls } from "../../redux/MallSlice";
@@ -9,28 +9,29 @@ import { fetchMalls } from "../../redux/MallSlice";
 import Malls from "./Malls";
 import Shops from "./Shops";
 const Dashboard = ({ history }) => {
-  const allMalls = useSelector(selectedAllMalls);
+  // const allMalls = useSelector(selectedAllMalls);
 
-  const dispatch = useDispatch()
+  const [allMalls, setAllMalls] = useState([]);
+  const [filteredMalls, setFilteredMalls] = useState([]);
+
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
-    // const data = fireStore
-    //   .collection("mallInfo")
-    //   .get()
-    //   .then((snapshot) => {
-    //     snapshot.forEach((doc) => {
-    //       dispatch({
-    //         type: fetchMalls,
-    //         payload: {
-    //           ...doc.data(),
-    //           id: doc.id,
-    //         },
-    //       });
-    //     });
-    //   }, []);
-
-    // console.log(data);
-  });
+    const fetchMalls = async () => {
+      const fetchedMalls = await fireStore.collection("mallInfo").get();
+      const malls = [];
+      fetchedMalls.forEach((mall) =>
+        malls.push({
+          id: mall.id,
+          ...mall.data(),
+        })
+      );
+      setFilteredMalls(malls.slice(malls.length - 3))
+      setAllMalls(malls)
+    };
+    fetchMalls();
+    return fetchMalls;
+  }, []);
 
   const shops = allMalls.map((mall) => ({
     mall_id: mall.id,
@@ -65,7 +66,7 @@ const Dashboard = ({ history }) => {
       </div>
       {allMalls.length > 0 ? (
         <div className="wrapper-container malls-container">
-          <Malls allMalls={allMalls} />
+          <Malls allMalls={filteredMalls} />
           <p className="show-more" onClick={handleAllMalls}>
             View All
           </p>

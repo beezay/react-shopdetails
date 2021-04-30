@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Switch, withRouter } from "react-router";
+import AdminAllMalls from "./components/Admin/AdminAllMalls";
 import LoginAdmin from "./components/Admin/LoginAdmin";
 import Navbar from "./components/Admin/Navbar";
 import RegisterAdmin from "./components/Admin/RegisterAdmin";
@@ -16,24 +17,24 @@ const App = () => {
   // const [showSearchbar, setShowSearchbar] = useState(false)
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const data = fireStore
-      .collection("mallInfo")
-      .get()
-      .then((snapshot) => {
-        snapshot.forEach((doc) => {
-          dispatch({
-            type: fetchMalls,
-            payload: {
-              ...doc.data(),
-              id: doc.id
-            },
-          });
-        });
-      }, []);
+  // useEffect(() => {
+  //   const data = fireStore
+  //     .collection("mallInfo")
+  //     .get()
+  //     .then((snapshot) => {
+  //       snapshot.forEach((doc) => {
+  //         dispatch({
+  //           type: fetchMalls,
+  //           payload: {
+  //             ...doc.data(),
+  //             id: doc.id
+  //           },
+  //         });
+  //       });
+  //     }, []);
 
-    console.log(data);
-  });
+  //   console.log(data);
+  // });
 
   return (
     <>
@@ -46,7 +47,7 @@ const App = () => {
         />
         <Route path="/addMall" render={() => <AddMall />} />
         <Route path="/malls/:id" render={() => <MallsDetails />} />
-        <Route exact path="/malls" render={() => <Malls  />} />
+        <Route exact path="/malls" render={() => <AdminAllMalls  />} />
         <Route path="/shops" render={() => <Shops />} />
         <Route path="/admin/register" render={() => <RegisterAdmin />} />
         <Route path="/admin/login" render={() => <LoginAdmin />} />
