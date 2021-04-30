@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import AddedMallDetails from "./AddedMallDetails";
 import MallPreview from "./MallPreview";
 import { selectAddedShops, removeShops } from "../../redux/MallSlice";
+import uuid from "react-uuid";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
   const [image, setImage] = useState(null);
@@ -85,11 +86,12 @@ const AddMall = ({ history }) => {
     const forID = Date.now();
     const shopArr = addedShopsDetails.map((shop, idx) => ({
       ...shop,
-      shopImages: {
-        shopId: forID,
-        shopUrl: imgArr[idx]
-      },
+      shopImages: imgArr[idx].map((img, index) => ({
+        shopImgId: uuid(),
+        shopImgUrl: img,
+      })),
     }));
+    console.log(shopArr);
     return shopArr;
   };
 
