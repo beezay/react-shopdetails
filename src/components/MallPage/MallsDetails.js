@@ -34,39 +34,44 @@ const MallsDetails = () => {
   console.log(mall, id);
 
   return (
-    <div className="container mt-5">
-      THis is where we show details of Mall
-      <div className="container-fluid">
-        <div className="mall-info text-center mt-3">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Illo,
-          provident!
-          {mall.length > 0 && <h1> {mall[0].mallName} </h1>}
-        </div>
-        <div className="image-container">
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
+    <div className="container mt-2">
+    <div className="d-flex justify-content-between flex-wrap">
+    <button className="m-0 btn btn-outline-info">Add Shop</button>
+    <button className="m-0 btn btn-outline-success">Edit Mall</button>
+    </div>
+      {mall.length && (
+        <div className="container-fluid m-0">
+          <div className="mall-info text-center mt-1">
+            <div className="detail-container">
+              <h1> {mall[0].mallName} </h1>
+              <h3>KhichhaPokhari</h3>
+            </div>
           </div>
-          {/* <img src="./assets/mall.jfif" alt="" /> */}
-        </div>
-        <div className="container-fluid text-center">
-          <div className="row">
-            <div className="col-3 mt-5">
-              <div className="image-container">
-                <div className="detail-container">
-                  <h3>Peoples Plaza</h3>
-                  <h3>KhichhaPokhari</h3>
-                </div>
-                <img src="./assets/mall.jfif" alt="" />
+          <div className="single-mall-image-container">
+            <img
+              classname="single-mall-image"
+              src={mall[0].mallImage.imageUrl}
+              alt=""
+              // style={{ maxWidth: "200px", maxHeight: "200px" }}
+            />
+          </div>
+          <div className="container-fluid text-center">
+            <div className="row">
+              <div className="col-3 mt-5">
+                {mall[0].shops &&
+                  mall[0].shops.map((shop) => (
+                    <div className="image-container">
+                      <div className="detail-container">
+                        <h3> {shop?.shopName} </h3>
+                      </div>
+                      <img src={shop?.shopImages[0]?.shopImgUrl} alt="" />
+                    </div>
+                  ))}
               </div>
             </div>
-            <div className="col-3 mt-5">Hello</div>
-            <div className="col-3 mt-5">Hello</div>
-            <div className="col-3 mt-5">Hello</div>
-            <div className="col-3 mt-5">Hello</div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

@@ -35,3 +35,51 @@
 .remove-shop-image:hover {
     transform: scale(1.3);
 }
+
+.single-mall-image-container {
+    overflow: hidden;
+    max-height: 300px;
+    max-width: 400px;
+    margin: 0 auto;
+    /* padding: 20% */
+    position: relative;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px 2px #636e72;
+}
+
+.single-mall-image-container .detail-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-height: 96%;
+    max-width: 98%;
+}
+
+.single-mall-image-container img {
+    /* min-height: 200px !important;
+    min-width: 200px !important; */
+    /* object-fit: cover;
+    object-position: bottom; */
+    min-width: 100%;
+    min-height: 100%;
+    max-width: 150%;
+    /* position: absolute; */
+    top: 0;
+    left: 0;
+    filter: blur(1px);
+    z-index: -1;
+    transition: all 0.3s ease;
+}
+
+.single-mall-image-container img:hover {
+    filter: none;
+    transform: scale(1.2);
+    transform-origin: center;
+}
