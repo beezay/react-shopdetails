@@ -167,8 +167,8 @@ label.image-add-shop:hover {
   /* border: 2px solid red; */
   text-align: center;
   background: rgba(255, 255, 255, 0.658);
-  min-width: max-content;
-  max-width: 600px;
+  min-width: 900px;
+  max-width: 1100px;
   min-height: max-content;
   max-height: 600px;
   /* background-blend-mode: soft-light; */

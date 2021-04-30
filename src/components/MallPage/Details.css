@@ -1,0 +1,37 @@
+.shop-image-popup {
+    filter: blur(1px);
+    transition: all 0.3s ease;
+    /* z-index: -1; */
+}
+
+.shop-image-popup:hover {
+    filter: none;
+}
+
+.shop-image-popup-container {
+    position: relative;
+    /* box-shadow: 2px 1px 3px 1px rgba(105, 104, 104, 0.678); */
+    border-radius: 12px;
+    align-items: center;
+    justify-items: center;
+    padding: 5px 0;
+    max-width: max-content;
+    margin: 0;
+}
+
+.remove-shop-image {
+    color: red;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 999;
+    margin-right: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.remove-shop-image:hover {
+    transform: scale(1.3);
+}

@@ -18,6 +18,23 @@ const mallSlice = createSlice({
       };
     },
 
+    removeSingleShopImage: (state, action) => {
+      console.log("Shop Image Remove", action.payload);
+      return {
+        ...state,
+        addedShops: state.addedShops.map((shop) =>
+          shop.id === action.payload.shopId
+            ? {
+                ...shop,
+                shopImages: shop.shopImages.filter(
+                  (img) => img.id !== action.payload.imgId
+                ),
+              }
+            : shop
+        ),
+      };
+    },
+
     removeShops: (state) => {
       return {
         ...state,
@@ -35,7 +52,12 @@ const mallSlice = createSlice({
   },
 });
 
-export const { fetchMalls, addShops, removeShops } = mallSlice.actions;
+export const {
+  fetchMalls,
+  addShops,
+  removeShops,
+  removeSingleShopImage,
+} = mallSlice.actions;
 
 export const selectedAllMalls = (state) => state.malls.malls;
 export const selectAddedShops = (state) => state.malls.addedShops;

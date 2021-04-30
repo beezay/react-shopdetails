@@ -5,6 +5,7 @@ const AddedMallDetails = ({ addedShopsDetails }) => {
   const [showPopup, setShowPopup] = useState(null);
 
   const handleImagePopup = (id) => {
+    console.log(id);
     setShowPopup(id);
     // setTimeout(() => {
     //   setShowPopup(false);
@@ -48,6 +49,7 @@ const AddedMallDetails = ({ addedShopsDetails }) => {
                   <ImagePopup
                     shopImages={shop.shopImages}
                     setShowPopup={setShowPopup}
+                    shopId={shop.id}
                   />
                 )}
               </tr>
