@@ -53,7 +53,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
-    
+
     position: absolute;
     top: 50%;
     left: 50%;
@@ -82,4 +82,58 @@
     filter: none;
     transform: scale(1.2);
     transform-origin: center;
+}
+
+.add-shop-modal {
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.445);
+}
+
+.add-shop-modal .add-shop-wrapper {
+    /* position: relative; */
+}
+
+.add-shop-modal .add-shop-wrapper .form-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 1px 1px 3px 1px rgb(2, 46, 35);
+    min-width: 400px;
+    min-height: 300px;
+    align-content: center;
+    text-align: center;
+    background: #fff;
+}
+
+.add-shop-modal .add-shop-wrapper .form-wrapper form {
+    padding: 20px;
+}
+
+.form-wrapper p.close-btn {
+    position: absolute;
+    display: inline;
+    /* top: 0; */
+    right: 0;
+    color: crimson;
+    margin: 10px auto;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 2px 8px;
+    /* border: 2px solid black; */
+
+    transition: all 0.3s ease;
+}
+
+.form-wrapper p.close-btn:hover {
+    font-size: 22px;
+    color: coral;
 }
