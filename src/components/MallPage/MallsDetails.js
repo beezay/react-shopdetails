@@ -8,11 +8,10 @@ const MallsDetails = () => {
 
   const malls = useSelector(selectedAllMalls)
 
-  const id = useParams()
-  console.log('ID', id);
-
-  const mall = malls.filter(x=> x.id !== id)
-  console.log(mall);
+  const {id} = useParams()
+  
+  const mall = malls.filter(x=> x.id === id)
+  console.log(mall, malls);
 
   return (
     <div className="container mt-5">

@@ -29,7 +29,7 @@ const mallSlice = createSlice({
       console.log("Malls Fetched", action.payload);
       return {
         ...state,
-        malls: [...state.malls,action.payload],
+        malls: [...state.malls, action.payload],
       };
     },
   },

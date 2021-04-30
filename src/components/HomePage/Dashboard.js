@@ -1,24 +1,45 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router";
 import { selectedAllMalls } from "../../redux/MallSlice";
 import SearchMall from "../Search/SearchMall";
 import "./Dashboard.css";
+import { fireStore } from "../../firebase/firebase";
+import { fetchMalls } from "../../redux/MallSlice";
 import Malls from "./Malls";
 import Shops from "./Shops";
 const Dashboard = ({ history }) => {
   const allMalls = useSelector(selectedAllMalls);
 
-  const shops = allMalls.map(mall => (
-    {
-      mall_id: mall.id,
-      mallName: mall.mallName,
-      shops:mall.shops.map(x => ({
-        shopName: x.shopName,
-        shopImg: x.shopImages[0]
-      }))
-    }
-  ))
+  const dispatch = useDispatch()
+
+  React.useEffect(() => {
+    // const data = fireStore
+    //   .collection("mallInfo")
+    //   .get()
+    //   .then((snapshot) => {
+    //     snapshot.forEach((doc) => {
+    //       dispatch({
+    //         type: fetchMalls,
+    //         payload: {
+    //           ...doc.data(),
+    //           id: doc.id,
+    //         },
+    //       });
+    //     });
+    //   }, []);
+
+    // console.log(data);
+  });
+
+  const shops = allMalls.map((mall) => ({
+    mall_id: mall.id,
+    mallName: mall.mallName,
+    shops: mall.shops.map((x) => ({
+      shopName: x.shopName,
+      shopImg: x.shopImages[0],
+    })),
+  }));
 
   const handleAddNewMall = () => {
     history.push("/addMall");

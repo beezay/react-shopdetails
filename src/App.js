@@ -46,7 +46,7 @@ const App = () => {
         />
         <Route path="/addMall" render={() => <AddMall />} />
         <Route path="/malls/:id" render={() => <MallsDetails />} />
-        <Route exact path="/malls" render={() => <Malls />} />
+        <Route exact path="/malls" render={() => <Malls  />} />
         <Route path="/shops" render={() => <Shops />} />
         <Route path="/admin/register" render={() => <RegisterAdmin />} />
         <Route path="/admin/login" render={() => <LoginAdmin />} />

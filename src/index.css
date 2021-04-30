@@ -11,3 +11,22 @@ h1, h2, h3, h4 {
   color: #747d8c;
   letter-spacing: 2px;
 }
+
+.delete-on-card {
+  font-size: 1.3rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flexbox;
+  padding: 20px;
+  font-weight: 600;
+  color: crimson;
+  z-index: 999;
+  border: 2px solid red;
+  transition: all 0.3s ease-out;
+}
+
+.delete-on-card:hover {
+  font-size: 1.8rem;
+  /* color: #f3f3; */
+}

@@ -1,3 +1,4 @@
+import uuid from 'react-uuid'
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
@@ -37,7 +38,10 @@ const AddShop = ({ setShopAdd, shopDetails }) => {
     const shopData = {
       id: id,
       ...data,
-      shopImages: [...images],
+      shopImages: images.map(image => ({
+        id: uuid(),
+        shopImgUrl: image
+      })),
     };
     dispatch(addShops(shopData));
     setShopAdd(false);

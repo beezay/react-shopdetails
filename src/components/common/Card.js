@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Card = (props) => {
+  const [showCross, setShowCross] = useState(true);
+
+  const handleMallDelete = () => {
+    console.log('Delete Clicked');
+  }
+
   return (
-    <div className={props.className} onClick={()=>props.func(props.id)} >
+    <div
+      className={props.className}
+      onClick={() => props.func(props.id)}
+      onMouseOver={() => setShowCross(true)}
+      onMouseLeave={()=>setShowCross(false)}
+    >
       <div className="detail-container">
         <h3> {props.name}</h3>
         <h4>{props.address}</h4>
       </div>
       <img src={props.imgUrl} alt={props.name} />
+      {showCross && <span className="delete-on-card" onClick={ () => handleMallDelete()} >X</span>}
     </div>
   );
 };

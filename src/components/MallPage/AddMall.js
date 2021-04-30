@@ -82,9 +82,13 @@ const AddMall = ({ history }) => {
 
   const shopDetails = (imgArr) => {
     console.log("ShopDetails", imgArr);
+    const forID = Date.now();
     const shopArr = addedShopsDetails.map((shop, idx) => ({
       ...shop,
-      shopImages: imgArr[idx],
+      shopImages: {
+        shopId: forID,
+        shopUrl: imgArr[idx]
+      },
     }));
     return shopArr;
   };
