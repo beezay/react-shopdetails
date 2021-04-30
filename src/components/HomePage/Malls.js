@@ -18,7 +18,7 @@ const Malls = ({ allMalls }) => {
         {/* <SearchMall /> */}
       </div>
       <div className="image-wrapper">
-        {allMalls.map((mall) => (
+        {allMalls.slice(0,3).map((mall) => (
           <Card
             className="image-container"
             func={handleInfoClick}

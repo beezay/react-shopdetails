@@ -58,11 +58,12 @@ const AddMall = ({ history }) => {
   };
 
   const shopUpload = async () => {
+    console.log(addedShopsDetails);
     await Promise.all(
       addedShopsDetails.map((shop) =>
         Promise.all(
           shop.shopImages.map((item) =>
-            storage.ref(`shopImages/${item.name}`).put(item)
+            storage.ref(`shopImages/${item.shopImgUrl.name}`).put(item.shopImgUrl)
           )
         )
       )
@@ -72,7 +73,7 @@ const AddMall = ({ history }) => {
       addedShopsDetails.map((shop) =>
         Promise.all(
           shop.shopImages.map((item) =>
-            storage.ref(`shopImages/${item.name}`).getDownloadURL()
+            storage.ref("shopImages").child(item?.shopImgUrl?.name).getDownloadURL()
           )
         )
       )

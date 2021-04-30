@@ -13,11 +13,13 @@ const Dashboard = ({ history }) => {
 
   const [allMalls, setAllMalls] = useState([]);
   const [filteredMalls, setFilteredMalls] = useState([]);
+  const [loading, setLoading] = useState(null);
 
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     const fetchMalls = async () => {
+      setLoading(true);
       const fetchedMalls = await fireStore.collection("mallInfo").get();
       const malls = [];
       fetchedMalls.forEach((mall) =>
@@ -30,25 +32,27 @@ const Dashboard = ({ history }) => {
       setAllMalls(malls);
     };
     fetchMalls();
+    setLoading(false);
     return fetchMalls;
   }, []);
 
   const onChangeSearch = (e) => {
     console.log(e.target.value);
-    const searchRegex = new RegExp(e.target.value, "gi");
-    const searchedMall = allMalls.filter((mall) =>
-      mall.mallName.match(searchRegex)
-    );
-    setFilteredMalls(searchedMall);
+    if (e.target.value) {
+      const searchRegex = new RegExp(e.target.value, "gi");
+      const searchedMall = allMalls.filter((mall) =>
+        mall.mallName.match(searchRegex)
+      );
+      setFilteredMalls(searchedMall);
+    } else {
+      setFilteredMalls(allMalls.slice(allMalls.length - 3));
+    }
   };
 
   const shops = allMalls.map((mall) => ({
     mall_id: mall.id,
     mallName: mall.mallName,
-    shops: mall.shops.map((x) => ({
-      shopName: x.shopName,
-      shopImg: x.shopImages[0],
-    })),
+    shops: mall.shops,
   }));
 
   const handleAddNewMall = () => {
@@ -66,6 +70,7 @@ const Dashboard = ({ history }) => {
   return (
     <div className="container-fluid dashboard-wrapper">
       <div className="dashboard-header">
+        {loading && <p>Loading...</p>}
         <div className="btn-wrapper">
           <button className="btn-add-mall" onClick={handleAddNewMall}>
             ADD NEW MALL
@@ -75,7 +80,7 @@ const Dashboard = ({ history }) => {
       </div>
       {allMalls.length > 0 ? (
         <div className="wrapper-container malls-container">
-          <Malls allMalls={filteredMalls} />
+          <Malls allMalls={allMalls} />
           <p className="show-more" onClick={handleAllMalls}>
             View All
           </p>
