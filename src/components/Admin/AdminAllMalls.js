@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import { fireStore } from "../../firebase/firebase";
 import Card from "../common/Card";
 
 const AdminAllMalls = () => {
   const [allMalls, setAllMalls] = useState();
   const [loading, setLoading] = useState(true)
+
+  const {history} = useHistory()
 
   useEffect(() => {
     const fetchMalls = async () => {
@@ -23,6 +26,11 @@ const AdminAllMalls = () => {
     return fetchMalls;
   }, []);
 
+  const handleInfoClick = (mallId) => {
+    console.log(mallId);
+    history.push(`malls/${mallId}`);
+  };
+
   return (
     <div className="malls-wrapper">
       <div className="mall-heading">
@@ -35,7 +43,7 @@ const AdminAllMalls = () => {
           {allMalls.map((mall) => (
             <Card
               className="image-container"
-              // func={handleInfoClick}
+              func={handleInfoClick}
               name={mall.mallName}
               address={mall.mallAddress}
               imgUrl={mall.mallImage.imageUrl}
