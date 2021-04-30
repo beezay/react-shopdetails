@@ -26,12 +26,21 @@ const Dashboard = ({ history }) => {
           ...mall.data(),
         })
       );
-      setFilteredMalls(malls.slice(malls.length - 3))
-      setAllMalls(malls)
+      setFilteredMalls(malls.slice(malls.length - 3));
+      setAllMalls(malls);
     };
     fetchMalls();
     return fetchMalls;
   }, []);
+
+  const onChangeSearch = (e) => {
+    console.log(e.target.value);
+    const searchRegex = new RegExp(e.target.value, "gi");
+    const searchedMall = allMalls.filter((mall) =>
+      mall.mallName.match(searchRegex)
+    );
+    setFilteredMalls(searchedMall);
+  };
 
   const shops = allMalls.map((mall) => ({
     mall_id: mall.id,
@@ -62,7 +71,7 @@ const Dashboard = ({ history }) => {
             ADD NEW MALL
           </button>
         </div>
-        <SearchMall />
+        <SearchMall onchange={onChangeSearch} />
       </div>
       {allMalls.length > 0 ? (
         <div className="wrapper-container malls-container">
