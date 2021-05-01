@@ -1,15 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { fireStore } from "../../firebase/firebase";
+import { fireStore, storage } from "../../firebase/firebase";
 import { selectedAllMalls } from "../../redux/MallSlice";
+import Alert from "../common/Alert";
 import Malls from "../HomePage/Malls";
 import "./Details.css";
 const MallsDetails = () => {
   const [allMalls, setAllMalls] = useState([]);
   const [mall, setMall] = useState([]);
+  const [dbShops, setDbShops] =useState()
   const [addShopStatus, setAddShopStatus] = useState(false);
-  const [shopImages, setShopImages] = useState([])
+  const [shopImages, setShopImages] = useState([]);
+
+  const {
+    handleSubmit,
+    formState: { errors },
+    register,
+    reset,
+  } = useForm();
 
   useEffect(() => {
     const fetchMalls = async () => {
@@ -22,8 +32,9 @@ const MallsDetails = () => {
         })
       );
       const singleMall = malls.filter((x) => x.id === id);
-      console.log(singleMall, malls);
+      console.log(singleMall[0].shops, malls);
       setAllMalls(malls);
+      setDbShops(singleMall[0].shops)
       setMall(singleMall);
     };
     fetchMalls();
@@ -33,14 +44,40 @@ const MallsDetails = () => {
 
   const { id } = useParams();
 
-  console.log(mall, id);
-
   const handleAddedShopImages = (e) => {
     const shopImageList = Object.values(e.target.files);
     console.log(shopImageList);
-    setShopImages(shopImageList)
+    setShopImages(shopImageList);
   };
-  console.log(shopImages);
+
+  const shopImageUploads = async () => {
+    console.log("ShopImages", shopImages);
+    await Promise.all(
+      shopImages.map((shopImg) =>
+        storage.ref(`shopImages/${shopImg.name}`).put(shopImg)
+      )
+    );
+
+    const shopImageUrl = await Promise.all(
+      shopImages.map((shopImg) =>
+        storage.ref("shopImages").child(shopImg?.name).getDownloadURL()
+      )
+    );
+    console.log(shopImageUrl);
+    return shopImageUrl;
+  };
+
+  const handleAddShopSubmit = async (data) => {
+    const shop_id = Date.now()
+    console.log(data);
+    let shopImgArr;
+    shopImgArr = await shopImageUploads();
+    console.log(shopImgArr);
+    const shopData = {
+
+    }
+  };
+  console.log('Mall', mall);
   return (
     <>
       {addShopStatus && (
@@ -50,7 +87,7 @@ const MallsDetails = () => {
               <p className="close-btn" onClick={() => setAddShopStatus(false)}>
                 X
               </p>
-              <form>
+              <form onSubmit={handleSubmit(handleAddShopSubmit)}>
                 <div className="form-floating">
                   <input
                     type="text"
@@ -58,8 +95,10 @@ const MallsDetails = () => {
                     id="floatingInput"
                     defaultValue=""
                     placeholder="Name of the Shop"
+                    {...register("shopName", { required: true })}
                   />
                   {/* <label htmlFor="floatingInput">Mall Name</label> */}
+                  {errors.shopName && <Alert title="Please write about Shop" />}
                 </div>
                 <div className="form-floating">
                   <textarea
@@ -68,8 +107,10 @@ const MallsDetails = () => {
                     id="floatingPassword"
                     defaultValue=""
                     placeholder="Description"
+                    {...register("shopDesc", { required: true })}
                   />
                   {/* <label htmlFor="floatingPassword">Address</label> */}
+                  {errors.shopDesc && <Alert title="Please write about Shop" />}
                 </div>
 
                 <div className="form-floating mt-2">
@@ -85,9 +126,10 @@ const MallsDetails = () => {
                   <span className="py-0 mt-2 text-info font-weight-light">
                     First Image will be shown as Thumbnail
                   </span>
-                  {shopImages && shopImages.map(x => (
-                    <p className="text-dark"> {x.name} </p> 
-                  ))}
+                  {shopImages &&
+                    shopImages.map((x) => (
+                      <p className="text-dark"> {x.name} </p>
+                    ))}
                 </div>
                 <button className="btn btn-lg btn-warning mt-2 " type="submit">
                   SAVE SHOP
