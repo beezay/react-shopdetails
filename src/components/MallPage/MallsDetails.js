@@ -183,12 +183,12 @@ const MallsDetails = () => {
               />
             </div>
             <div className="container-fluid text-center">
-              <div className="row d-flex">
-                <div className="col-3 mt-5">
+              <div className="row ">
+                <div className=" mt-5 d-flex">
                   {mall[0].shops &&
                     mall[0].shops.map((shop) => (
-                      <div className="image-container">
-                        <div className="detail-container">
+                      <div className="image-container card-img mr-3">
+                        <div className="detail-containerr">
                           <h3> {shop?.shopName} </h3>
                         </div>
                         <img src={shop?.shopImages[0]?.shopImgUrl} alt="" />
