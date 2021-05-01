@@ -9,6 +9,7 @@ const MallsDetails = () => {
   const [allMalls, setAllMalls] = useState([]);
   const [mall, setMall] = useState([]);
   const [addShopStatus, setAddShopStatus] = useState(false);
+  const [shopImages, setShopImages] = useState([])
 
   useEffect(() => {
     const fetchMalls = async () => {
@@ -34,13 +35,21 @@ const MallsDetails = () => {
 
   console.log(mall, id);
 
+  const handleAddedShopImages = (e) => {
+    const shopImageList = Object.values(e.target.files);
+    console.log(shopImageList);
+    setShopImages(shopImageList)
+  };
+  console.log(shopImages);
   return (
     <>
       {addShopStatus && (
         <div className="add-shop-modal">
           <div className="add-shop-wrapper">
             <div className="form-wrapper">
-              <p className="close-btn" onClick={()=>setAddShopStatus(false)} >X</p>
+              <p className="close-btn" onClick={() => setAddShopStatus(false)}>
+                X
+              </p>
               <form>
                 <div className="form-floating">
                   <input
@@ -63,14 +72,22 @@ const MallsDetails = () => {
                   {/* <label htmlFor="floatingPassword">Address</label> */}
                 </div>
 
-                <div className="form-floating">
+                <div className="form-floating mt-2">
                   <label htmlFor="file-uploads" className="image-add-shop">
-                    <input id="file-uploads" type="file" multiple />
+                    <input
+                      id="file-uploads"
+                      type="file"
+                      multiple
+                      onChange={handleAddedShopImages}
+                    />
                     <span>Upload IMAGEs + </span>
                   </label>
                   <span className="py-0 mt-2 text-info font-weight-light">
                     First Image will be shown as Thumbnail
                   </span>
+                  {shopImages && shopImages.map(x => (
+                    <p className="text-dark"> {x.name} </p> 
+                  ))}
                 </div>
                 <button className="btn btn-lg btn-warning mt-2 " type="submit">
                   SAVE SHOP
