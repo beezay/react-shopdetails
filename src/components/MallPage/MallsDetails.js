@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
+import uuid from "react-uuid";
 import { fireStore, storage } from "../../firebase/firebase";
 import { selectedAllMalls } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
@@ -10,9 +11,10 @@ import "./Details.css";
 const MallsDetails = () => {
   const [allMalls, setAllMalls] = useState([]);
   const [mall, setMall] = useState([]);
-  const [dbShops, setDbShops] =useState()
+  const [dbShops, setDbShops] = useState();
   const [addShopStatus, setAddShopStatus] = useState(false);
   const [shopImages, setShopImages] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
     handleSubmit,
@@ -34,7 +36,7 @@ const MallsDetails = () => {
       const singleMall = malls.filter((x) => x.id === id);
       console.log(singleMall[0].shops, malls);
       setAllMalls(malls);
-      setDbShops(singleMall[0].shops)
+      setDbShops(singleMall[0].shops);
       setMall(singleMall);
     };
     fetchMalls();
@@ -68,16 +70,31 @@ const MallsDetails = () => {
   };
 
   const handleAddShopSubmit = async (data) => {
-    const shop_id = Date.now()
+    setIsSubmitting(true)
+    const shop_id = Date.now();
     console.log(data);
     let shopImgArr;
     shopImgArr = await shopImageUploads();
     console.log(shopImgArr);
+    const shopImagesData = shopImgArr.map((imgUrl) => ({
+      shopImgId: uuid(),
+      shopImgUrl: imgUrl,
+    }));
+    console.log(shopImagesData, "check");
     const shopData = {
-
-    }
+      id: shop_id,
+      ...data,
+      shopImages: [...shopImagesData],
+    };
+    console.log(shopData);
+    await fireStore
+      .collection("mallInfo")
+      .doc(id)
+      .update({ shops: [...dbShops, shopData] });
+    reset();
+    setAddShopStatus(false)
   };
-  console.log('Mall', mall);
+  console.log("Mall", mall);
   return (
     <>
       {addShopStatus && (
@@ -131,8 +148,8 @@ const MallsDetails = () => {
                       <p className="text-dark"> {x.name} </p>
                     ))}
                 </div>
-                <button className="btn btn-lg btn-warning mt-2 " type="submit">
-                  SAVE SHOP
+                <button className="btn btn-lg btn-warning mt-2 " type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? 'SAVING...' : 'SAVE SHOP'}
                 </button>
               </form>
             </div>
@@ -166,7 +183,7 @@ const MallsDetails = () => {
               />
             </div>
             <div className="container-fluid text-center">
-              <div className="row">
+              <div className="row d-flex">
                 <div className="col-3 mt-5">
                   {mall[0].shops &&
                     mall[0].shops.map((shop) => (
