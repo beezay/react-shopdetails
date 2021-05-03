@@ -6,6 +6,9 @@
     border: 2px soild red;
     border-radius: 8px;
     box-shadow: 2px 1px 3px 1px #dadada;
+    overflow: hidden;
+    transition: all 0.3s ease-in;
+    position: relative;
 }
 
 .shop-image-container img {
@@ -17,4 +20,18 @@
     object-fit: cover;
     border-radius: 8px;
     padding: 1px;
+    transition: all 0.3s ease-in;
+}
+
+.shop-image-container:hover {
+    transform: translateY(-8px);
+}
+
+.shop-image-container:hover img {
+    transform: scale(1.2);
+}
+
+.delete-on-card {
+    cursor: pointer;
+    border: none;
 }
