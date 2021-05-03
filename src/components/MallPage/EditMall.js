@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { fireStore } from "../../firebase/firebase";
+import { addShops, selectAddedShops } from "../../redux/MallSlice";
 import AddedAlert from "../common/AddedAlert";
 import Alert from "../common/Alert";
 import AddedMallDetails from "./AddedMallDetails";
@@ -16,6 +18,7 @@ const EditMall = (props) => {
   const [image, setImage] = useState();
   const [imgPreview, setImgPreview] = useState();
   const [imageError, setImageError] = useState();
+  const [shopAdd, setShopAdd] = useState(false);
 
   const {
     handleSubmit,
@@ -24,6 +27,8 @@ const EditMall = (props) => {
     register,
   } = useForm();
 
+
+  const dispatch = useDispatch();
   const { id } = useParams();
   console.log("ID", id);
 
@@ -45,13 +50,17 @@ const EditMall = (props) => {
       setMall(singleMall);
       setImage(singleMall[0].mallImage);
       setImgPreview(singleMall[0].mallImage.imageUrl);
+      singleMall[0].shops.map((shop) => dispatch(addShops(shop)));
     };
     fetchMalls();
-
     return fetchMalls;
   }, []);
 
+  const addedShopsDetails = useSelector(selectAddedShops);
+
+
   console.log("Malls", mall, dbShops, allMalls, image);
+  console.log('Added Shops Details', addedShopsDetails);
 
   const fileUploadChange = (e) => {
     const mallImage = e.target.files[0];
@@ -64,6 +73,13 @@ const EditMall = (props) => {
       setImage("");
       setImageError("Please Select only  PNG/JPG");
     }
+  };
+
+  const handleAddShop = (val) => {
+    if (shopAdd) {
+      setShopAdd(val);
+    }
+    setShopAdd(val);
   };
 
   const handleMallEditSubmit = (data) => {
@@ -132,23 +148,26 @@ const EditMall = (props) => {
                   {errors.mallPic && <Alert title="Image Required!" />}
                 </div>
               </form>
-              {/* {shopAdd && (
-              <AddShop
-                setShopAdd={setShopAdd}
-                shopDetails={addedShopsDetails}
-              />
-            )} */}
-              {/* <div className="add-shop">
-              {shopAdd ? (
-                <p className="add-shop-p" onClick={() => handleAddShop(false)}>
-                  Cancel{" "}
-                </p>
-              ) : (
-                <p className="add-shop-p" onClick={() => handleAddShop(true)}>
-                  Add Shop <span>+</span>{" "}
-                </p>
+              {shopAdd && (
+                <AddShop
+                  setShopAdd={setShopAdd}
+                  shopDetails={addedShopsDetails}
+                />
               )}
-            </div> */}
+              <div className="add-shop">
+                {shopAdd ? (
+                  <p
+                    className="add-shop-p"
+                    onClick={() => handleAddShop(false)}
+                  >
+                    Cancel{" "}
+                  </p>
+                ) : (
+                  <p className="add-shop-p" onClick={() => handleAddShop(true)}>
+                    Add Shop <span>+</span>{" "}
+                  </p>
+                )}
+              </div>
               {/* <button
               id="dynamic-btn"
               className={submitBtnClassName}
@@ -167,11 +186,11 @@ const EditMall = (props) => {
               CANCEL
             </button>*/}
             </div>
-            {/* {addedShopsDetails.length > 0 && (
-            <div className="col-6">
-              <AddedMallDetails />
-            </div>
-          )}*/}
+            {addedShopsDetails.length > 0 && (
+              <div className="col-6">
+                <AddedMallDetails addedShopsDetails={addedShopsDetails} />
+              </div>
+            )}
           </div>
         )}
       </div>

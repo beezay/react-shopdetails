@@ -1,8 +1,15 @@
 import React, { useState } from "react";
+import { FormProvider } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import ImagePopup from "./ImagePopup";
+import {removeShop} from "../../redux/MallSlice"
 
 const AddedMallDetails = ({ addedShopsDetails }) => {
   const [showPopup, setShowPopup] = useState(null);
+
+  const dispatch = useDispatch()
+
+  console.log('Added Shops', addedShopsDetails);
 
   const handleImagePopup = (id) => {
     console.log(id);
@@ -11,6 +18,11 @@ const AddedMallDetails = ({ addedShopsDetails }) => {
     //   setShowPopup(false);
     // }, 3000);
   };
+
+  const handleShopDelete = (shopId) => {
+    console.log(shopId);
+    dispatch(removeShop(shopId))
+  }
 
   return (
     <>
@@ -33,7 +45,7 @@ const AddedMallDetails = ({ addedShopsDetails }) => {
           </tr>
         </thead>
         <tbody>
-          {addedShopsDetails.map((shop) => (
+          {addedShopsDetails?.map((shop) => (
             <tr className="table">
               <th scope="row">{shop.shopName}</th>
               <td>{shop.shopDesc}</td>
@@ -50,12 +62,13 @@ const AddedMallDetails = ({ addedShopsDetails }) => {
                     shopImages={shop.shopImages}
                     setShowPopup={setShowPopup}
                     shopId={shop.id}
+                    edit='true'
                   />
                 )}
               </tr>
 
               <td>
-                <i className="fas fa-trash shop-delete" />
+                <i className="fas fa-trash shop-delete" onClick={()=>handleShopDelete(shop.id)} />
               </td>
             </tr>
           ))}

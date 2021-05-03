@@ -27,7 +27,7 @@ const mallSlice = createSlice({
             ? {
                 ...shop,
                 shopImages: shop.shopImages.filter(
-                  (img) => img.id !== action.payload.imgId
+                  (img) => img.shopImgId !== action.payload.imgId
                 ),
               }
             : shop
@@ -35,10 +35,11 @@ const mallSlice = createSlice({
       };
     },
 
-    removeShops: (state) => {
+    removeShop: (state, action) => {
+      console.log(action.payload);
       return {
         ...state,
-        addedShops: [],
+        addedShops: state.addedShops.filter(shop => shop.id !== action.payload),
       };
     },
 
@@ -55,7 +56,7 @@ const mallSlice = createSlice({
 export const {
   fetchMalls,
   addShops,
-  removeShops,
+  removeShop,
   removeSingleShopImage,
 } = mallSlice.actions;
 

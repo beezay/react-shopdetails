@@ -1,28 +1,23 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {removeSingleShopImage, selectAddedShops} from '../../redux/MallSlice'
+import { removeSingleShopImage, selectAddedShops } from "../../redux/MallSlice";
 
-const ImagePopup = ({ shopImages, setShowPopup, shopId }) => {
+const ImagePopup = ({ shopImages, setShowPopup, shopId, edit }) => {
   const [hoverStatus, setHoverStatus] = useState(false);
 
   console.log(shopImages);
 
-  const dispatch  = useDispatch()
-
-  const addedShops = useSelector(selectAddedShops)
-
-  const handleMouseevent = (status) => {};
+  const dispatch = useDispatch();
 
   const handleShopImageDelete = (imgId) => {
-
     console.log(shopId, imgId);
     // const data = addedShops.map(shop => {
     //   if(shop.id === shopId) {}
     // })
 
-
-    dispatch(removeSingleShopImage({imgId, shopId}))
-  }
+    dispatch(removeSingleShopImage({ imgId, shopId }));
+    setShowPopup(null);
+  };
 
   return (
     <div className="image-popup card-img w-50 shadow">
@@ -34,11 +29,13 @@ const ImagePopup = ({ shopImages, setShowPopup, shopId }) => {
         {shopImages.map((imgItem) => (
           <div className="shop-image-popup-container">
             <img
-              src={URL.createObjectURL(imgItem.shopImgUrl)}
+              src={
+                edit === "true"
+                  ? imgItem.shopImgUrl
+                  : URL.createObjectURL(imgItem.shopImgUrl)
+              }
               alt=""
               className="shop-image-popup"
-              onMouseEnter={() => handleMouseevent(true)}
-              onMouseLeave={() => handleMouseevent(false)}
               style={{
                 borderRadius: "50%",
                 width: "150px",
@@ -47,7 +44,12 @@ const ImagePopup = ({ shopImages, setShowPopup, shopId }) => {
                 marginBottom: "20px",
               }}
             />
-            <span className="remove-shop-image" onClick={()=>handleShopImageDelete(imgItem.id)} >X</span>
+            <span
+              className="remove-shop-image"
+              onClick={() => handleShopImageDelete(imgItem.shopImgId)}
+            >
+              X
+            </span>
           </div>
         ))}
 

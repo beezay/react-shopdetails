@@ -11,7 +11,7 @@ import AddedAlert from "../common/AddedAlert";
 import { useDispatch, useSelector } from "react-redux";
 import AddedMallDetails from "./AddedMallDetails";
 import MallPreview from "./MallPreview";
-import { selectAddedShops, removeShops } from "../../redux/MallSlice";
+import { selectAddedShops, removeShop } from "../../redux/MallSlice";
 import uuid from "react-uuid";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
@@ -131,7 +131,7 @@ const AddMall = ({ history }) => {
     const show = setTimeout(() => {
       setShowInfo(false);
     }, 5000);
-    dispatch(removeShops());
+    dispatch(removeShop());
     setIsSubmitting(false);
   };
 
