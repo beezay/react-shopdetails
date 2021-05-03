@@ -52,7 +52,6 @@ const ShopId = (props) => {
       setMall(singleMall);
     };
     fetchMall();
-    return fetchMall();
   }, []);
 
   //! Delete SHop Images
@@ -107,8 +106,10 @@ const ShopId = (props) => {
     reset();
     setEditShop(false);
     setIsSubmitting(false);
-  };
 
+    setShop([shopData]);
+  };
+  console.log("After Edit => ", shop);
   return (
     <>
       {editShop && (

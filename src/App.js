@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Route, Switch, withRouter } from "react-router";
 import AdminAllMalls from "./components/Admin/AdminAllMalls";
+import AdminAllShops from "./components/Admin/AdminAllShops";
 import LoginAdmin from "./components/Admin/LoginAdmin";
 import Navbar from "./components/Admin/Navbar";
 import RegisterAdmin from "./components/Admin/RegisterAdmin";
@@ -52,6 +53,7 @@ const App = () => {
         <Route path="/malls/:id" render={() => <MallsDetails />} />
         <Route path="/shop/:mallid/:shopid" render={() => <ShopId />} />
         <Route exact path="/malls" render={() => <AdminAllMalls  />} />
+        <Route exact path="/shops" render={() => <AdminAllShops  />} />
         <Route path="/shops" render={() => <Shops />} />
         <Route path="/admin/register" render={() => <RegisterAdmin />} />
         <Route path="/admin/login" render={() => <LoginAdmin />} />

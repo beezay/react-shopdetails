@@ -21,10 +21,15 @@ const Navbar = () => {
       <div className="collapse navbar-collapse" id="navbarColor01">
         <ul className="navbar-nav ul-flex">
           <li className="nav-item active">
-            <Link className="nav-link">Home</Link>
+            <Link className="nav-link" to="/">Home</Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link">Features</Link>
+            <Link className="nav-link" to="/malls">
+              Malls
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/shops">Shops</Link>
           </li>
           <li className="nav-item dropdown dropdown-nav ">
             <a

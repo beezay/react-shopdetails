@@ -43,7 +43,7 @@ const Dashboard = ({ history }) => {
       const searchedMall = allMalls.filter((mall) =>
         mall.mallName.match(searchRegex)
       );
-      debugger
+      // debugger
       console.log("SearchedMall", searchedMall);
       console.log("allMalls", allMalls);
       setFilteredMalls(searchedMall);
