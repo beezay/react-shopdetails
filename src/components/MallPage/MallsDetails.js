@@ -183,7 +183,7 @@ const MallsDetails = () => {
               />
             </div>
             <div className="container-fluid text-center">
-              <div className="row ">
+              <div className="row-cols-4">
                 <div className=" mt-5 d-flex">
                   {mall[0].shops &&
                     mall[0].shops.map((shop) => (

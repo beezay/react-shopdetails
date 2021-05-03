@@ -41,15 +41,17 @@ const Dashboard = ({ history }) => {
     if (e.target.value) {
       const searchRegex = new RegExp(e.target.value, "gi");
       const searchedMall = allMalls.filter((mall) =>
-        mall.mallName.match(searchRegex)
+        mall.mallAddress.match(searchRegex)
       );
+      console.log("SearchedMall", searchedMall);
+      console.log("allMalls", allMalls);
       setFilteredMalls(searchedMall);
     } else {
       setFilteredMalls(allMalls.slice(allMalls.length - 3));
     }
   };
 
-  const shops = allMalls.map((mall) => ({
+  const shops = filteredMalls.map((mall) => ({
     mall_id: mall.id,
     mallName: mall.mallName,
     shops: mall.shops,
@@ -80,7 +82,7 @@ const Dashboard = ({ history }) => {
       </div>
       {allMalls.length > 0 ? (
         <div className="wrapper-container malls-container">
-          <Malls allMalls={allMalls} />
+          <Malls allMalls={allMalls} filterMalls={filteredMalls} />
           <p className="show-more" onClick={handleAllMalls}>
             View All
           </p>

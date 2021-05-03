@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import Card from "../common/Card";
 import SearchMall from "../Search/SearchMall";
 
-const Malls = ({ allMalls }) => {
+const Malls = ({ allMalls, filterMalls }) => {
   const history = useHistory();
 
   const handleInfoClick = (mallId) => {
@@ -18,7 +18,7 @@ const Malls = ({ allMalls }) => {
         {/* <SearchMall /> */}
       </div>
       <div className="image-wrapper">
-        {allMalls.slice(0,3).map((mall) => (
+        {filterMalls.map((mall) => (
           <Card
             className="image-container"
             func={handleInfoClick}

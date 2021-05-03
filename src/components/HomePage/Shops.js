@@ -11,13 +11,13 @@ const Shops = ({ shops }) => {
         <h2>SHOPS</h2>
       </div>
       <div className="image-wrapper">
-        {shops.slice(0,3).map((shop) => ( 
+        {shops[0]?.shops.map((shop) => ( 
           <Card
             className="image-container"
             shop={shop}
-            name={shop?.shops[0]?.shopName}
-            imgUrl={shop?.shops[0]?.shopImages[0]?.shopImgUrl}
-            address={shop.mallName}
+            name={shop?.shopName}
+            imgUrl={shop?.shopImages[0]?.shopImgUrl}
+            address={shops.mallName}
             key={shop.id}
           />
         ))}
