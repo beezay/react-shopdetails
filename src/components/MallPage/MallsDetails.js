@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import uuid from "react-uuid";
 import { fireStore, storage } from "../../firebase/firebase";
 import { selectedAllMalls } from "../../redux/MallSlice";
@@ -14,7 +14,7 @@ const MallsDetails = () => {
   const [dbShops, setDbShops] = useState();
   const [addShopStatus, setAddShopStatus] = useState(false);
   const [shopImages, setShopImages] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     handleSubmit,
@@ -46,6 +46,12 @@ const MallsDetails = () => {
 
   const { id } = useParams();
 
+  const history = useHistory()
+
+  const goToEditMall = () => {
+    history.push(`/editMall/${id}`)
+  }
+
   const handleAddedShopImages = (e) => {
     const shopImageList = Object.values(e.target.files);
     console.log(shopImageList);
@@ -70,7 +76,7 @@ const MallsDetails = () => {
   };
 
   const handleAddShopSubmit = async (data) => {
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     const shop_id = Date.now();
     console.log(data);
     let shopImgArr;
@@ -92,7 +98,10 @@ const MallsDetails = () => {
       .doc(id)
       .update({ shops: [...dbShops, shopData] });
     reset();
-    setAddShopStatus(false)
+    setAddShopStatus(false);
+    let newMall = [...mall];
+    newMall[0].shops = [...dbShops, shopData];
+    setMall(newMall);
   };
   console.log("Mall", mall);
   return (
@@ -148,8 +157,12 @@ const MallsDetails = () => {
                       <p className="text-dark"> {x.name} </p>
                     ))}
                 </div>
-                <button className="btn btn-lg btn-warning mt-2 " type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? 'SAVING...' : 'SAVE SHOP'}
+                <button
+                  className="btn btn-lg btn-warning mt-2 "
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "SAVING..." : "SAVE SHOP"}
                 </button>
               </form>
             </div>
@@ -164,7 +177,7 @@ const MallsDetails = () => {
           >
             Add Shop
           </button>
-          <button className="m-0 btn btn-outline-success">Edit Mall</button>
+          <button className="m-0 btn btn-outline-success" onClick={goToEditMall}>Edit Mall</button>
         </div>
         {mall.length && (
           <div className="container-fluid m-0">

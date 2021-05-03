@@ -7,7 +7,7 @@ const AdminAllMalls = () => {
   const [allMalls, setAllMalls] = useState();
   const [loading, setLoading] = useState(true)
 
-  const {history} = useHistory()
+  const history = useHistory()
 
   useEffect(() => {
     const fetchMalls = async () => {

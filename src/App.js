@@ -9,6 +9,7 @@ import Dashboard from "./components/HomePage/Dashboard";
 import Malls from "./components/HomePage/Malls";
 import Shops from "./components/HomePage/Shops";
 import AddMall from "./components/MallPage/AddMall";
+import EditMall from "./components/MallPage/EditMall";
 import MallsDetails from "./components/MallPage/MallsDetails";
 import { fireStore } from "./firebase/firebase";
 import { fetchMalls } from "./redux/MallSlice";
@@ -46,6 +47,7 @@ const App = () => {
           render={() => <Dashboard showSearchbar="false" />}
         />
         <Route path="/addMall" render={() => <AddMall />} />
+        <Route path="/editMall/:id" render={() => <EditMall />} />
         <Route path="/malls/:id" render={() => <MallsDetails />} />
         <Route exact path="/malls" render={() => <AdminAllMalls  />} />
         <Route path="/shops" render={() => <Shops />} />

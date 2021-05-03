@@ -41,8 +41,9 @@ const Dashboard = ({ history }) => {
     if (e.target.value) {
       const searchRegex = new RegExp(e.target.value, "gi");
       const searchedMall = allMalls.filter((mall) =>
-        mall.mallAddress.match(searchRegex)
+        mall.mallName.match(searchRegex)
       );
+      debugger
       console.log("SearchedMall", searchedMall);
       console.log("allMalls", allMalls);
       setFilteredMalls(searchedMall);
