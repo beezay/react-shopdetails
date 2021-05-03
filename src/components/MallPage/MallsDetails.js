@@ -81,7 +81,7 @@ const MallsDetails = () => {
 
   const handleAddShopSubmit = async (data) => {
     setIsSubmitting(true);
-    const shop_id = Date.now();
+    const shop_id = Date.now().toString();
     console.log(data);
     let shopImgArr;
     shopImgArr = await shopImageUploads();

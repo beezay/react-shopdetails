@@ -44,11 +44,9 @@ const ShopId = (props) => {
       const singleMall = malls.filter((x) => x.id === mallId);
       console.log(singleMall[0].shops, malls);
       setAllMalls(malls);
-      const shops = singleMall[0].shops.filter((x) => x.id !== +shopId);
+      const shops = singleMall[0].shops.filter((x) => x.id !== shopId);
       setDbShops(shops);
-      const shop = singleMall[0].shops.filter(
-        (shop) => shop.id === +shopId || shop.id === shopId
-      );
+      const shop = singleMall[0].shops.filter((shop) => shop.id === shopId);
       console.log("Shop", shop, shops);
       setShop(shop);
       setMall(singleMall);

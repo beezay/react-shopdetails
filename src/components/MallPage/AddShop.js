@@ -36,7 +36,7 @@ const AddShop = ({ setShopAdd, shopDetails }) => {
     const id = Date.now();
     console.log("Shop Added", images);
     const shopData = {
-      id: id,
+      id: id.toString(),
       ...data,
       shopImages: images.map(image => ({
         id: uuid(),
