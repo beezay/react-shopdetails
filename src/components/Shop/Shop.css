@@ -1,3 +1,9 @@
+.shop-container {
+    flex-wrap: wrap;
+    width: 100vw;
+    justify-content: space-evenly;
+}
+
 .shop-image-container {
     max-height: 250;
     min-height: 250;

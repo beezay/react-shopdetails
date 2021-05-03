@@ -15,6 +15,7 @@ const ShopId = (props) => {
   // console.log(mallid, shopid);
   const [allMalls, setAllMalls] = useState([]);
   const [mall, setMall] = useState([]);
+  const [dbShops, setDbShops] = useState();
   const [shop, setShop] = useState([]);
   const [deleteShop, setDeleteShop] = useState(null);
   const [editShop, setEditShop] = useState(null);
@@ -43,8 +44,12 @@ const ShopId = (props) => {
       const singleMall = malls.filter((x) => x.id === mallId);
       console.log(singleMall[0].shops, malls);
       setAllMalls(malls);
-      const shop = singleMall[0].shops.filter((shop) => shop.id === +shopId);
-      console.log("Shop", shop);
+      const shops = singleMall[0].shops.filter((x) => x.id !== +shopId);
+      setDbShops(shops);
+      const shop = singleMall[0].shops.filter(
+        (shop) => shop.id === +shopId || shop.id === shopId
+      );
+      console.log("Shop", shop, shops);
       setShop(shop);
       setMall(singleMall);
     };
@@ -96,8 +101,13 @@ const ShopId = (props) => {
       id: shopId,
       shopImages: [...oldShopImages, ...addedShopImages],
     };
-    await fireStore.collection("mallInfo").doc(mallId).update({shops: [shopData]});
+    await fireStore
+      .collection("mallInfo")
+      .doc(mallId)
+      .update({ shops: [...dbShops, shopData] });
     console.log(shopData, "Data");
+    reset();
+    setEditShop(false);
     setIsSubmitting(false);
   };
 
@@ -128,7 +138,7 @@ const ShopId = (props) => {
                     type="text"
                     className="form-control"
                     id="floatingPassword"
-                    defaultValue={shop[0]?.shopName}
+                    defaultValue={shop[0]?.shopDesc}
                     placeholder="Description"
                     {...register("shopDesc", { required: true })}
                   />
@@ -178,7 +188,7 @@ const ShopId = (props) => {
         </button>
       </div>
       <div className="container-fluid text-center py-4">
-        <div className="container d-flex justify-content-between align-items-center">
+        <div className="container d-flex align-items-center shop-container">
           {shop[0]?.shopImages.map((img) => (
             <div
               className="shop-image-container"
