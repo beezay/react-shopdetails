@@ -20,7 +20,7 @@ const MallPreview = ({ image, preview }) => {
           style={{ height: "100px", width: "100px", borderRadius: "50%" }}
         />
       </div>
-      <p className="mt-2 ml-5"> {image.name} </p>
+      <p className="mt-2 ml-5">  </p>
     </div>
   );
 };

@@ -13,6 +13,9 @@ const EditMall = (props) => {
   const [allMalls, setAllMalls] = useState([]);
   const [mall, setMall] = useState([]);
   const [dbShops, setDbShops] = useState();
+  const [image, setImage] = useState();
+  const [imgPreview, setImgPreview] = useState();
+  const [imageError, setImageError] = useState();
 
   const {
     handleSubmit,
@@ -23,7 +26,8 @@ const EditMall = (props) => {
 
   const { id } = useParams();
   console.log("ID", id);
-  console.log("Malls", mall, dbShops, allMalls);
+
+  const imageTypes = ["image/png", "image/jpg", "image/jpeg"];
 
   useEffect(() => {
     const fetchMalls = async () => {
@@ -39,18 +43,33 @@ const EditMall = (props) => {
       setAllMalls(malls);
       setDbShops(singleMall[0].shops);
       setMall(singleMall);
+      setImage(singleMall[0].mallImage);
+      setImgPreview(singleMall[0].mallImage.imageUrl);
     };
     fetchMalls();
 
     return fetchMalls;
   }, []);
 
-  const fileUploadChange = () => {};
+  console.log("Malls", mall, dbShops, allMalls, image);
+
+  const fileUploadChange = (e) => {
+    const mallImage = e.target.files[0];
+
+    setImgPreview(URL.createObjectURL(mallImage));
+    if (mallImage && imageTypes.includes(mallImage.type)) {
+      setImage(mallImage);
+      setImageError("");
+    } else {
+      setImage("");
+      setImageError("Please Select only  PNG/JPG");
+    }
+  };
 
   const handleMallEditSubmit = (data) => {
     console.log(data);
   };
-  const singleMall = mall[0]
+  const singleMall = mall[0];
 
   return (
     <>
@@ -101,13 +120,15 @@ const EditMall = (props) => {
                     />
                     <span>+</span>
                   </label>
-                  {/* {image && <MallPreview image={image} preview={imgPreview} />}
-                {imageError && (
-                  <p className="alert-danger py-2 rounded w-50 m-auto">
-                    {" "}
-                    {imageError}{" "}
-                  </p>
-                )} */}
+                  {image && (
+                    <MallPreview image={image.imageName} preview={imgPreview} />
+                  )}
+                  {imageError && (
+                    <p className="alert-danger py-2 rounded w-50 m-auto">
+                      {" "}
+                      {imageError}{" "}
+                    </p>
+                  )}
                   {errors.mallPic && <Alert title="Image Required!" />}
                 </div>
               </form>
