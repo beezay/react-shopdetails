@@ -9,7 +9,7 @@ const AddedMallDetails = ({ addedShopsDetails }) => {
 
   const dispatch = useDispatch()
 
-  console.log('Added Shops', addedShopsDetails);
+  // console.log('Added Shops', addedShopsDetails);
 
   const handleImagePopup = (id) => {
     console.log(id);

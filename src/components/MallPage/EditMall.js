@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
-import { fireStore } from "../../firebase/firebase";
+import { useHistory, useParams } from "react-router";
+import uuid from "react-uuid";
+import { fireStore, storage } from "../../firebase/firebase";
 import { addShops, selectAddedShops } from "../../redux/MallSlice";
 import AddedAlert from "../common/AddedAlert";
 import Alert from "../common/Alert";
@@ -19,6 +20,9 @@ const EditMall = (props) => {
   const [imgPreview, setImgPreview] = useState();
   const [imageError, setImageError] = useState();
   const [shopAdd, setShopAdd] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  let submitBtnClassName = "w-100 btn btn-lg btn-outline-primary btn-save";
 
   const {
     handleSubmit,
@@ -27,8 +31,8 @@ const EditMall = (props) => {
     register,
   } = useForm();
 
-
   const dispatch = useDispatch();
+  const history = useHistory();
   const { id } = useParams();
   console.log("ID", id);
 
@@ -58,9 +62,8 @@ const EditMall = (props) => {
 
   const addedShopsDetails = useSelector(selectAddedShops);
 
-
   console.log("Malls", mall, dbShops, allMalls, image);
-  console.log('Added Shops Details', addedShopsDetails);
+  console.log("Added Shops Details", addedShopsDetails);
 
   const fileUploadChange = (e) => {
     const mallImage = e.target.files[0];
@@ -82,9 +85,83 @@ const EditMall = (props) => {
     setShopAdd(val);
   };
 
-  const handleMallEditSubmit = (data) => {
-    console.log(data);
+  const handleCancelAddMall = () => {
+    history.push(`malls/${id}`);
   };
+
+  const shopUpload = async () => {
+    console.log(addedShopsDetails);
+    await Promise.all(
+      addedShopsDetails.map((shop) =>
+        Promise.all(
+          shop.shopImages.map((item) =>
+            storage
+              .ref(`shopImages/${item.shopImgUrl.name}`)
+              .put(item.shopImgUrl)
+          )
+        )
+      )
+    );
+
+    const shopImageUrl = await Promise.all(
+      addedShopsDetails.map((shop) =>
+        Promise.all(
+          shop.shopImages.map((item) =>
+            storage
+              .ref("shopImages")
+              .child(item?.shopImgUrl?.name)
+              .getDownloadURL()
+          )
+        )
+      )
+    );
+    console.log(shopImageUrl);
+    return shopImageUrl;
+  };
+
+  const shopDetails = (imgArr) => {
+    console.log("ShopDetails", imgArr);
+
+    const shopArr = addedShopsDetails.map((shop, idx) => ({
+      ...shop,
+      shopImages: imgArr[idx].map((img) => ({
+        shopImgId: uuid(),
+        shopImgUrl: img,
+      })),
+    }));
+    console.log(shopArr);
+    return shopArr;
+  };
+
+  const handleMallEditSubmit = async (data) => {
+    console.log("Mall Submit => ", data);
+    setIsSubmitting(true);
+    let shopImgArr;
+    if (addedShopsDetails.length > 0) {
+      console.log("loop Entered");
+      shopImgArr = await shopUpload();
+    }
+
+    const shopArr = shopDetails(shopImgArr);
+
+    await storage.ref(`mallImages/${image.name}`).put(image);
+    const imgUrl = await storage
+      .ref("mallImages")
+      .child(image.name)
+      .getDownloadURL();
+    console.log(imgUrl);
+
+    const mallData = {
+      ...data,
+      mallImage: {
+        imageUrl: imgUrl,
+        imageName: image.name,
+      },
+    };
+    setIsSubmitting(false);
+    handleCancelAddMall();
+  };
+
   const singleMall = mall[0];
 
   return (
@@ -168,23 +245,23 @@ const EditMall = (props) => {
                   </p>
                 )}
               </div>
-              {/* <button
-              id="dynamic-btn"
-              className={submitBtnClassName}
-              type="submit"
-              onClick={handleSubmit(handleMallSubmit)}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Saving..." : "SAVE MALL"}
-            </button> */}
-              {/* <button
-              className="w-100 btn btn-lg btn-outline-warning btn-cancel"
-              type="button"
-              onClick={handleCancelAddMall}
-              disabled={isSubmitting}
-            >
-              CANCEL
-            </button>*/}
+              <button
+                id="dynamic-btn"
+                className={submitBtnClassName}
+                type="submit"
+                onClick={handleSubmit(handleMallEditSubmit)}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Updating..." : "UPDATE MALL"}
+              </button>
+              <button
+                className="w-100 btn btn-lg btn-outline-warning btn-cancel"
+                type="button"
+                onClick={handleCancelAddMall}
+                disabled={isSubmitting}
+              >
+                CANCEL
+              </button>
             </div>
             {addedShopsDetails.length > 0 && (
               <div className="col-6">

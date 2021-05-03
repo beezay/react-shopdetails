@@ -46,11 +46,15 @@ const MallsDetails = () => {
 
   const { id } = useParams();
 
-  const history = useHistory()
+  const history = useHistory();
+
+  const handleShopClick = (shopId) => {
+    history.push(`/shop/${id}/${shopId}`)
+  }
 
   const goToEditMall = () => {
-    history.push(`/editMall/${id}`)
-  }
+    history.push(`/editMall/${id}`);
+  };
 
   const handleAddedShopImages = (e) => {
     const shopImageList = Object.values(e.target.files);
@@ -177,7 +181,12 @@ const MallsDetails = () => {
           >
             Add Shop
           </button>
-          <button className="m-0 btn btn-outline-success" onClick={goToEditMall}>Edit Mall</button>
+          <button
+            className="m-0 btn btn-outline-success"
+            onClick={goToEditMall}
+          >
+            Edit Mall
+          </button>
         </div>
         {mall.length && (
           <div className="container-fluid m-0">
@@ -200,7 +209,7 @@ const MallsDetails = () => {
                 <div className=" mt-5 d-flex">
                   {mall[0].shops &&
                     mall[0].shops.map((shop) => (
-                      <div className="image-container card-img mr-3">
+                      <div className="image-container card-img mr-3" onClick={()=>handleShopClick(shop.id)}>
                         <div className="detail-containerr">
                           <h3> {shop?.shopName} </h3>
                         </div>

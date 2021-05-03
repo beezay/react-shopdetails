@@ -1,7 +1,7 @@
 import React from "react";
 
 const MallPreview = ({ image, preview }) => {
-  console.log(image);
+  // console.log(image); 
   return (
     <div className="d-flex align-items-center justify-content-center">
       <div
