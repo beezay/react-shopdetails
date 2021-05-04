@@ -13,6 +13,7 @@ import { fetchMalls } from "../../redux/MallSlice";
 import Malls from "./Malls";
 import Shops from "./Shops";
 import { loginStatus } from "../../utils/CheckLogin";
+import NoData from "../common/NoData";
 const Dashboard = ({ history }) => {
   // const allMalls = useSelector(selectedAllMalls);
 
@@ -79,7 +80,7 @@ const Dashboard = ({ history }) => {
   };
 
   return (
-    <div className="container-fluid dashboard-wrapper">
+    <div className="container-fluid dashboard-wrapper h-100">
       <div className="dashboard-header">
         {loading && <p>Loading...</p>}
         <div className="btn-wrapper">
@@ -89,7 +90,7 @@ const Dashboard = ({ history }) => {
             </button>
           )}
         </div>
-        <SearchMall onchange={onChangeSearch} />
+        {allMalls.length > 0 && <SearchMall onchange={onChangeSearch} />}
       </div>
       {allMalls.length > 0 ? (
         <div className="wrapper-container malls-container">
@@ -99,14 +100,20 @@ const Dashboard = ({ history }) => {
           </p>
         </div>
       ) : (
-        "No Any Malls... Please Add"
+        <NoData title={isAdmin ? "No Any Malls to Show... Add One" : "No Any Malls to Show...Visit Later!!!"} />
       )}
 
-      <div className="wrapper-container shops-container">
-        <Shops shops={shops} malls={allMalls} />
-        <p className="show-more" onClick={handleAllShops}>
-          View All
-        </p>
+      <div className="wrapper-container shops-container mb-auto">
+        {shops.length > 0 ? (
+          <>
+            <Shops shops={shops} malls={allMalls} />
+            <p className="show-more" onClick={handleAllShops}>
+              View All
+            </p>
+          </>
+        ) : (
+          <NoData title="No Any Shops to Show" />
+        )}
       </div>
     </div>
   );
