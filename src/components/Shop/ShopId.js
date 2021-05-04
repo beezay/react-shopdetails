@@ -132,6 +132,9 @@ const ShopId = (props) => {
     setShop([shopData]);
   };
   console.log("After Edit => ", shop);
+
+  
+
   return (
     <>
       {editShop && (
@@ -223,7 +226,7 @@ const ShopId = (props) => {
               key={img.shopImgId}
             >
               <img src={img.shopImgUrl} alt={img.shopImgId} />
-              {deleteShop && (
+              {isAdmin && deleteShop && (
                 <span
                   className="delete-on-card"
                   onClick={() => handleCrossClick(img.shopImgId)}
