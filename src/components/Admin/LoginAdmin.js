@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router";
+import { Redirect, useHistory } from "react-router";
 import Alert from "../common/Alert";
 
 const loginDetails = {
@@ -9,6 +9,8 @@ const loginDetails = {
 };
 
 const LoginAdmin = () => {
+  const [logged, setLogged] = useState(null);
+
   const {
     handleSubmit,
     reset,
@@ -16,7 +18,7 @@ const LoginAdmin = () => {
     register,
   } = useForm();
 
-  const history = useHistory()
+  const history = useHistory();
 
   const handleLoginSubmit = (data) => {
     const loggedIn =
@@ -26,11 +28,17 @@ const LoginAdmin = () => {
           : "Password not matched"
         : "Username not matched";
 
-    if(loggedIn) {
-      localStorage.setItem("loginStatus", true)
-      history.push("/")
+    if (loggedIn) {
+      localStorage.setItem("loginStatus", true);
+      setLogged(true);
+      history.push("/");
+      window.location.reload();
     }
   };
+
+  if (logged) {
+    // return <Redirect to="/" />
+  }
 
   return (
     <div className="py-4 container text-center w-25 form-container">

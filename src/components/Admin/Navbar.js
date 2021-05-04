@@ -42,13 +42,13 @@ const Navbar = () => {
           <li className="nav-item dropdown dropdown-nav ">
             <div className="d-flex align-items-center">
               <i className="fas fa-user admin-user" />
-              <Link
+              <a
                 className="nav-link"
-                to={isAdmin ? "/" : "/admin/login"}
+                href={isAdmin ? "/" : "/admin/login"}
                 onClick={() => localStorage.setItem("loginStatus", false)}
               >
                 {isAdmin ? "Logout" : "Admin Login"}
-              </Link>
+              </a>
             </div>
             {/* <a
               className="nav-link dropdown-toggle"
