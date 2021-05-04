@@ -37,7 +37,7 @@ const Dashboard = ({ history }) => {
           ...mall.data(),
         })
       );
-      setFilteredMalls(malls.slice(malls.length - 3));
+      setFilteredMalls(malls.slice(0, 4));
       setAllMalls(malls);
     };
     fetchMalls();
@@ -57,7 +57,7 @@ const Dashboard = ({ history }) => {
       console.log("allMalls", allMalls);
       setFilteredMalls(searchedMall);
     } else {
-      setFilteredMalls(allMalls.slice(allMalls.length - 3));
+      setFilteredMalls(allMalls.slice(0, 4));
     }
   };
 
@@ -100,7 +100,13 @@ const Dashboard = ({ history }) => {
           </p>
         </div>
       ) : (
-        <NoData title={isAdmin ? "No Any Malls to Show... Add One" : "No Any Malls to Show...Visit Later!!!"} />
+        <NoData
+          title={
+            isAdmin
+              ? "No Any Malls to Show... Add One"
+              : "No Any Malls to Show...Visit Later!!!"
+          }
+        />
       )}
 
       <div className="wrapper-container shops-container mb-auto">
