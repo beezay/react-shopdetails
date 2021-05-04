@@ -7,14 +7,11 @@ const Card = (props) => {
   console.log(props.shop);
 
   const isAdmin = useSelector(SelectIsAdmin);
-  const handleMallDelete = (id) => {
-    console.log("Delete Clicked", id);
-  };
 
   return (
     <div
       className={props?.className}
-      onClick={() => props.func(props.id)}
+      // onClick={() => props.func(props.id)}
       onMouseOver={() => setShowCross(true)}
       onMouseLeave={() => setShowCross(false)}
     >
@@ -26,7 +23,7 @@ const Card = (props) => {
       {isAdmin && showCross && (
         <span
           className="delete-on-card"
-          onClick={() => handleMallDelete(props.id)}
+          onClick={() => props.onShopDelete(props.id, props.shop.mall_id)}
         >
           X
         </span>

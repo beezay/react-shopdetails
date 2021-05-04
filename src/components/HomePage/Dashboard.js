@@ -103,7 +103,7 @@ const Dashboard = ({ history }) => {
       )}
 
       <div className="wrapper-container shops-container">
-        <Shops shops={shops} />
+        <Shops shops={shops} malls={allMalls} />
         <p className="show-more" onClick={handleAllShops}>
           View All
         </p>
