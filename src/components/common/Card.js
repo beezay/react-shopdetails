@@ -3,8 +3,8 @@ import React, { useState } from "react";
 const Card = (props) => {
   const [showCross, setShowCross] = useState(false);
   console.log(props.shop);
-  const handleMallDelete = () => {
-    console.log('Delete Clicked');
+  const handleMallDelete = (id) => {
+    console.log('Delete Clicked', id);
   }
 
   return (
@@ -19,7 +19,7 @@ const Card = (props) => {
         <h4>{props?.address}</h4>
       </div>
       <img src={props?.imgUrl} alt={props?.name} />
-      {showCross && <span className="delete-on-card" onClick={ () => handleMallDelete()} >X</span>}
+      {showCross && <span className="delete-on-card" onClick={ () => handleMallDelete(props.id)} >X</span>}
     </div>
   );
 };

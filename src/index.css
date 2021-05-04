@@ -17,7 +17,6 @@ h1, h2, h3, h4 {
   position: absolute;
   top: 0;
   right: 0;
-  display: inline-flexbox;
   padding: 20px;
   font-weight: 600;
   color: crimson;

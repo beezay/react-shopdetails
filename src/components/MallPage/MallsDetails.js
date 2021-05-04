@@ -202,7 +202,7 @@ const MallsDetails = () => {
             </div>
             <div className="single-mall-image-container">
               <img
-                classname="single-mall-image"
+                className="single-mall-image"
                 src={mall[0].mallImage.imageUrl}
                 alt=""
                 // style={{ maxWidth: "200px", maxHeight: "200px" }}
@@ -216,6 +216,7 @@ const MallsDetails = () => {
                       <div
                         className="image-container card-img mr-3"
                         onClick={() => handleShopClick(shop.id)}
+                        key={shop.id}
                       >
                         <div className="detail-containerr">
                           <h3 style={{ color: "#f1f2f6" }}>

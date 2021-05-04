@@ -7,7 +7,7 @@ const mallSlice = createSlice({
   initialState: {
     malls: [],
     addedShops: [],
-    isAdmin: false,
+    isAdmin: true,
   },
   reducers: {
     addShops: (state, action) => {

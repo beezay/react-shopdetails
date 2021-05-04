@@ -5,27 +5,28 @@ import SearchMall from "../Search/SearchMall";
 
 const AdminAllShops = () => {
   const [malls, setMalls] = useState([]);
-  const [shops, setShops] = useState([]);
+  const [allShops, setAllShops] = useState([]);
+  const [filteredShops, setFilteredShops] = useState([]);
   const [isLoading, setIsLoading] = useState(null);
 
   const onChangeSearch = (e) => {
     console.log(e.target.value);
 
     if (e.target.value) {
-      allShops = [];
+      // allShops = [];
       const searchRegex = new RegExp(e.target.value, "gi");
-      const searchedShop = allShops.map((shops) =>
-        shops.shops.filter((shop) => shop.shopName.match(searchRegex))
-      );
+
+      let searchedShop = allShops.map((shops) => {
+        shops.shops = shops.shops.filter((shop) =>
+          shop.shopName.match(searchRegex)
+        );
+        return shops;
+      });
       // debugger
       console.log("SearchedShop", searchedShop);
-      const finalSearched = searchedShop.filter((x) => x.length > 0);
-      console.log("FinalSearched", finalSearched);
-
-      allShops.push(finalSearched);
-      console.log('AllShops', allShops);
+      setFilteredShops(searchedShop);
     } else {
-      //   setFilteredMalls(allMalls.slice(allMalls.length - 3));
+      setFilteredShops(allShops);
     }
   };
 
@@ -39,6 +40,18 @@ const AdminAllShops = () => {
           ...mall.data(),
         })
       );
+      console.log("Malls", malls);
+      let shops = [];
+      malls.forEach((mall) =>
+        shops.push({
+          mallId: mall.id,
+          mallName: mall.mallName,
+          shops: mall.shops,
+        })
+      );
+      setAllShops(shops);
+      setFilteredShops(shops);
+      console.log("ALl Shops", allShops);
       setMalls(malls);
     };
     fetchMalls();
@@ -46,15 +59,7 @@ const AdminAllShops = () => {
     // return fetchMalls;
   }, []);
   console.log("Malls", malls);
-  let allMalls = [];
-  let allShops = [];
-  malls.forEach((mall) =>
-    allShops.push({
-      mallId: mall.id,
-      mallName: mall.mallName,
-      shops: mall.shops,
-    })
-  );
+
   // setShops(allShops)
   console.log("Shops =>", allShops);
 
@@ -65,9 +70,9 @@ const AdminAllShops = () => {
         <SearchMall onchange={onChangeSearch} />
       </div>
       {/* {loading && <h4>LOADING...</h4>} */}
-      {allShops.length && (
+      {filteredShops.length && (
         <div className="image-wrapper">
-          {allShops?.map((shops) =>
+          {filteredShops?.map((shops) =>
             shops.shops.map((shop) => (
               <Card
                 className="image-container"
