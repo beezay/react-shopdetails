@@ -5,7 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import uuid from "react-uuid";
 import { fireStore, storage } from "../../firebase/firebase";
-import { addShops, selectAddedShops } from "../../redux/MallSlice";
+import {
+  addShops,
+  resetShops,
+  selectAddedShops,
+  selectNewAddedShops,
+} from "../../redux/MallSlice";
 import AddedAlert from "../common/AddedAlert";
 import Alert from "../common/Alert";
 import AddedMallDetails from "./AddedMallDetails";
@@ -17,6 +22,7 @@ const EditMall = (props) => {
   const [mall, setMall] = useState([]);
   const [dbShops, setDbShops] = useState();
   const [image, setImage] = useState();
+  const [newMallImage, setNewMallImage] = useState();
   const [imgPreview, setImgPreview] = useState();
   const [imageError, setImageError] = useState();
   const [shopAdd, setShopAdd] = useState(false);
@@ -61,19 +67,21 @@ const EditMall = (props) => {
   }, []);
 
   const addedShopsDetails = useSelector(selectAddedShops);
+  const newAddedShopsDetails = useSelector(selectNewAddedShops);
 
   console.log("Malls", mall, dbShops, allMalls, image);
   console.log("Added Shops Details", addedShopsDetails);
+  console.log("Db Shops Details", dbShops);
 
   const fileUploadChange = (e) => {
     const mallImage = e.target.files[0];
 
     setImgPreview(URL.createObjectURL(mallImage));
     if (mallImage && imageTypes.includes(mallImage.type)) {
-      setImage(mallImage);
+      setNewMallImage(mallImage);
       setImageError("");
     } else {
-      setImage("");
+      setNewMallImage("");
       setImageError("Please Select only  PNG/JPG");
     }
   };
@@ -86,13 +94,13 @@ const EditMall = (props) => {
   };
 
   const handleCancelAddMall = () => {
-    history.push(`malls/${id}`);
+    history.push(`/malls/${id}`);
   };
 
   const shopUpload = async () => {
-    console.log(addedShopsDetails);
+    console.log(newAddedShopsDetails);
     await Promise.all(
-      addedShopsDetails.map((shop) =>
+      newAddedShopsDetails.map((shop) =>
         Promise.all(
           shop.shopImages.map((item) =>
             storage
@@ -103,8 +111,8 @@ const EditMall = (props) => {
       )
     );
 
-    const shopImageUrl = await Promise.all(
-      addedShopsDetails.map((shop) =>
+    const newShopImageUrl = await Promise.all(
+      newAddedShopsDetails.map((shop) =>
         Promise.all(
           shop.shopImages.map((item) =>
             storage
@@ -115,14 +123,14 @@ const EditMall = (props) => {
         )
       )
     );
-    console.log(shopImageUrl);
-    return shopImageUrl;
+    console.log(newShopImageUrl);
+    return newShopImageUrl;
   };
 
   const shopDetails = (imgArr) => {
     console.log("ShopDetails", imgArr);
 
-    const shopArr = addedShopsDetails.map((shop, idx) => ({
+    const shopArr = newAddedShopsDetails.map((shop, idx) => ({
       ...shop,
       shopImages: imgArr[idx].map((img) => ({
         shopImgId: uuid(),
@@ -136,29 +144,46 @@ const EditMall = (props) => {
   const handleMallEditSubmit = async (data) => {
     console.log("Mall Submit => ", data);
     setIsSubmitting(true);
-    let shopImgArr;
-    if (addedShopsDetails.length > 0) {
+    let newShopImgArr;
+    if (newAddedShopsDetails.length > 0) {
       console.log("loop Entered");
-      shopImgArr = await shopUpload();
+      newShopImgArr = await shopUpload();
     }
 
-    const shopArr = shopDetails(shopImgArr);
+    const newShopArr = shopDetails(newShopImgArr);
+    console.log("New Shop Arr", newShopArr);
+    console.log("Old Shop Arr", addedShopsDetails);
 
-    await storage.ref(`mallImages/${image.name}`).put(image);
-    const imgUrl = await storage
-      .ref("mallImages")
-      .child(image.name)
-      .getDownloadURL();
-    console.log(imgUrl);
+    const allShopsArr = [...newShopArr, ...addedShopsDetails];
 
-    const mallData = {
+    console.log("All SHops Arr", allShopsArr);
+    let mallImgUrl;
+    if (newMallImage) {
+      await storage.ref(`mallImages/${newMallImage.name}`).put(newMallImage);
+      mallImgUrl = await storage
+        .ref("mallImages")
+        .child(newMallImage.name)
+        .getDownloadURL();
+      console.log(mallImgUrl);
+    }
+
+    console.log("Image=> ", image);
+
+    const mallImage = newMallImage
+      ? {
+          imageUrl: mallImgUrl,
+          imageName: newMallImage.name,
+        }
+      : image;
+    const editedMallData = {
       ...data,
-      mallImage: {
-        imageUrl: imgUrl,
-        imageName: image.name,
-      },
+      mallImage: mallImage,
+      shops: [...allShopsArr],
     };
+    console.log("Edited Mall Data", editedMallData);
+    await fireStore.collection("mallInfo").doc(id).update(editedMallData);
     setIsSubmitting(false);
+    dispatch(resetShops());
     handleCancelAddMall();
   };
 
@@ -213,8 +238,18 @@ const EditMall = (props) => {
                     />
                     <span>+</span>
                   </label>
-                  {image && (
-                    <MallPreview image={image.imageName} preview={imgPreview} />
+                  {newMallImage ? (
+                    <MallPreview
+                      image={newMallImage.imageName}
+                      preview={imgPreview}
+                    />
+                  ) : (
+                    image && (
+                      <MallPreview
+                        image={image.imageName}
+                        preview={imgPreview}
+                      />
+                    )
                   )}
                   {imageError && (
                     <p className="alert-danger py-2 rounded w-50 m-auto">
@@ -229,6 +264,7 @@ const EditMall = (props) => {
                 <AddShop
                   setShopAdd={setShopAdd}
                   shopDetails={addedShopsDetails}
+                  type="edit"
                 />
               )}
               <div className="add-shop">
@@ -265,7 +301,10 @@ const EditMall = (props) => {
             </div>
             {addedShopsDetails.length > 0 && (
               <div className="col-6">
-                <AddedMallDetails addedShopsDetails={addedShopsDetails} />
+                <AddedMallDetails
+                  addedShopsDetails={addedShopsDetails}
+                  newAddedShopsDetails={newAddedShopsDetails}
+                />
               </div>
             )}
           </div>

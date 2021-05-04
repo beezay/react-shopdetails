@@ -197,7 +197,7 @@ const MallsDetails = () => {
             <div className="mall-info text-center mt-1">
               <div className="detail-container">
                 <h1> {mall[0].mallName} </h1>
-                <h3>KhichhaPokhari</h3>
+                <h3>{mall[0].mallAddress} </h3>
               </div>
             </div>
             <div className="single-mall-image-container">

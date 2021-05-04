@@ -1,12 +1,11 @@
-import uuid from 'react-uuid'
+import uuid from "react-uuid";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { addShops } from "../../redux/MallSlice";
+import { addShops, addNewShops } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
 
-const AddShop = ({ setShopAdd, shopDetails }) => {
-
+const AddShop = ({ setShopAdd, shopDetails, type }) => {
   console.log(shopDetails);
 
   const [images, setImages] = useState();
@@ -32,18 +31,22 @@ const AddShop = ({ setShopAdd, shopDetails }) => {
     setImages(imageList);
   };
 
+  const check = (data) => {
+    type === "edit" ? dispatch(addNewShops(data)) : dispatch(addShops(data));
+  };
+
   const handleShopSubmit = (data) => {
     const id = Date.now();
     console.log("Shop Added", images);
     const shopData = {
       id: id.toString(),
       ...data,
-      shopImages: images.map(image => ({
+      shopImages: images.map((image) => ({
         id: uuid(),
-        shopImgUrl: image
+        shopImgUrl: image,
       })),
     };
-    dispatch(addShops(shopData));
+    check(shopData);
     setShopAdd(false);
     reset({ defaultValue: "" });
   };

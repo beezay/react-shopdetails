@@ -7,6 +7,7 @@ const mallSlice = createSlice({
   initialState: {
     malls: [],
     addedShops: [],
+    newAddedShops: [],
     isAdmin: true,
   },
   reducers: {
@@ -18,10 +19,28 @@ const mallSlice = createSlice({
       };
     },
 
+    addNewShops: (state, action) => {
+      console.log("New Shops Add", action.payload);
+      return {
+        ...state,
+        newAddedShops: [...state.newAddedShops, action.payload],
+      };
+    },
+
     removeSingleShopImage: (state, action) => {
       console.log("Shop Image Remove", action.payload);
       return {
         ...state,
+        newAddedShops: state.newAddedShops.map((shop) =>
+          shop.id === action.payload.shopId
+            ? {
+                ...shop,
+                shopImages: shop.shopImages.filter(
+                  (img) => img.shopImgId !== action.payload.imgId
+                ),
+              }
+            : shop
+        ),
         addedShops: state.addedShops.map((shop) =>
           shop.id === action.payload.shopId
             ? {
@@ -39,7 +58,20 @@ const mallSlice = createSlice({
       console.log(action.payload);
       return {
         ...state,
-        addedShops: state.addedShops.filter(shop => shop.id !== action.payload),
+        newAddedShops: state.newAddedShops.filter(
+          (shop) => shop.id !== action.payload
+        ),
+        addedShops: state.addedShops.filter(
+          (shop) => shop.id !== action.payload
+        ),
+      };
+    },
+
+    resetShops: (state, action) => {
+      return {
+        ...state,
+        newAddedShops: [],
+        addedShops: [],
       };
     },
 
@@ -56,12 +88,15 @@ const mallSlice = createSlice({
 export const {
   fetchMalls,
   addShops,
+  addNewShops,
   removeShop,
   removeSingleShopImage,
+  resetShops,
 } = mallSlice.actions;
 
 export const selectedAllMalls = (state) => state.malls.malls;
 export const selectAddedShops = (state) => state.malls.addedShops;
-export const SelectIsAdmin = state => state.malls.isAdmin;
+export const selectNewAddedShops = (state) => state.malls.newAddedShops;
+export const SelectIsAdmin = (state) => state.malls.isAdmin;
 
 export default mallSlice.reducer;
