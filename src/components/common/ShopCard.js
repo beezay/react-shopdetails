@@ -1,8 +1,13 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { SelectIsAdmin } from "../../redux/MallSlice";
 
 const ShopCard = (props) => {
   const [showCross, setShowCross] = useState(false);
-//   console.log(props);
+  //   console.log(props);
+
+  const isAdmin = useSelector(SelectIsAdmin);
+
   const handleMallDelete = (id) => {
     console.log("Delete Clicked", id);
   };
@@ -19,7 +24,7 @@ const ShopCard = (props) => {
         <h4>{props?.address}</h4>
       </div>
       <img src={props?.imgUrl} alt={props?.name} />
-      {showCross && (
+      {isAdmin && showCross && (
         <span
           className="delete-on-card"
           onClick={() => handleMallDelete(props.id)}

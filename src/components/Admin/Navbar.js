@@ -1,11 +1,15 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { SelectIsAdmin } from "../../redux/MallSlice";
 import "./Navbar.css";
 const Navbar = () => {
+  const isAdmin = useSelector(SelectIsAdmin);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a className="navbar-brand" href="#">
-        Logo
+      <a className="navbar-brand" href="/">
+        WEN
       </a>
       <button
         className="navbar-toggler"
@@ -21,7 +25,9 @@ const Navbar = () => {
       <div className="collapse navbar-collapse" id="navbarColor01">
         <ul className="navbar-nav ul-flex">
           <li className="nav-item active">
-            <Link className="nav-link" to="/">Home</Link>
+            <Link className="nav-link" to="/">
+              Home
+            </Link>
           </li>
           <li className="nav-item">
             <Link className="nav-link" to="/malls">
@@ -29,10 +35,22 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/shops">Shops</Link>
+            <Link className="nav-link" to="/shops">
+              Shops
+            </Link>
           </li>
           <li className="nav-item dropdown dropdown-nav ">
-            <a
+            <div className="d-flex align-items-center">
+              <i className="fas fa-user admin-user" />
+              <a
+                className="nav-link"
+                href={isAdmin ? "/" : "/admin/login"}
+                onClick={() => localStorage.setItem("loginStatus", false)}
+              >
+                {isAdmin ? "Logout" : "Admin Login"}
+              </a>
+            </div>
+            {/* <a
               className="nav-link dropdown-toggle"
               data-toggle="dropdown"
               href="#"
@@ -49,7 +67,7 @@ const Navbar = () => {
               <a className="dropdown-item" href="#">
                 Logout
               </a>
-            </div>
+            </div> */}
           </li>
         </ul>
       </div>

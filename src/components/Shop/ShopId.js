@@ -61,24 +61,27 @@ const ShopId = (props) => {
   //! Delete SHop Images
   const handleCrossClick = async (imgId) => {
     console.log(imgId);
-    const oldShopImages = shop[0].shopImages;
-    console.log(oldShopImages);
-    const filterAfterDeleteImages = oldShopImages.filter(
-      (img) => img.shopImgId !== imgId
-    );
-    console.log("Current Shop", shop);
-    let shopData = shop[0];
-    console.log(shopData);
-    let newShop = {
-      ...shopData,
-      shopImages: [...filterAfterDeleteImages],
-    };
-    console.log("New Shop", newShop);
-    await fireStore
-      .collection("mallInfo")
-      .doc(mallId)
-      .update({ shops: [...dbShops, newShop] });
-    setShop([newShop]);
+    let confirm = window.confirm("Are you Sure you want to Delete this Image?");
+    if (confirm) {
+      const oldShopImages = shop[0].shopImages;
+      console.log(oldShopImages);
+      const filterAfterDeleteImages = oldShopImages.filter(
+        (img) => img.shopImgId !== imgId
+      );
+      console.log("Current Shop", shop);
+      let shopData = shop[0];
+      console.log(shopData);
+      let newShop = {
+        ...shopData,
+        shopImages: [...filterAfterDeleteImages],
+      };
+      console.log("New Shop", newShop);
+      await fireStore
+        .collection("mallInfo")
+        .doc(mallId)
+        .update({ shops: [...dbShops, newShop] });
+      setShop([newShop]);
+    }
   };
 
   const handleAddedShopImages = (e) => {
@@ -132,6 +135,7 @@ const ShopId = (props) => {
     setShop([shopData]);
   };
   console.log("After Edit => ", shop);
+
   return (
     <>
       {editShop && (
@@ -223,7 +227,7 @@ const ShopId = (props) => {
               key={img.shopImgId}
             >
               <img src={img.shopImgUrl} alt={img.shopImgId} />
-              {deleteShop && (
+              {isAdmin && deleteShop && (
                 <span
                   className="delete-on-card"
                   onClick={() => handleCrossClick(img.shopImgId)}
