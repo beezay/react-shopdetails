@@ -61,7 +61,7 @@ const Dashboard = ({ history }) => {
   };
 
   const shops = filteredMalls.map((mall) => ({
-    mall_id: mall.id,
+    mallId: mall.id,
     mallName: mall.mallName,
     shops: mall.shops,
   }));

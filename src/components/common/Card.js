@@ -4,18 +4,19 @@ import { SelectIsAdmin } from "../../redux/MallSlice";
 
 const Card = (props) => {
   const [showCross, setShowCross] = useState(false);
-  console.log(props.shop);
 
   const isAdmin = useSelector(SelectIsAdmin);
 
   return (
     <div
       className={props?.className}
-      // onClick={() => props.func(props.id)}
       onMouseOver={() => setShowCross(true)}
       onMouseLeave={() => setShowCross(false)}
     >
-      <div className="detail-container">
+      <div
+        className="detail-container"
+        onClick={() => props.func(props?.id, props?.shop?.mallId)}
+      >
         <h3> {props?.name}</h3>
         <h4>{props?.address}</h4>
       </div>
@@ -23,7 +24,11 @@ const Card = (props) => {
       {isAdmin && showCross && (
         <span
           className="delete-on-card"
-          onClick={() => props.onShopDelete(props.id, props.shop.mall_id)}
+          onClick={() =>
+            props.onShopDelete
+              ? props?.onShopDelete(props.id, props.shop.mallId)
+              : props.onMallDelete(props.id)
+          }
         >
           X
         </span>

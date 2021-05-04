@@ -8,6 +8,11 @@ const Shops = ({ shops, malls }) => {
   const history = useHistory();
   console.log("Shops=> ", shops);
 
+  const handleSingleShopClick = (shopId, mallId) => {
+    console.log(shopId, mallId);
+    history.push(`/shop/${mallId}/${shopId}`);
+  };
+
   const handleShopDelete = async (shopId, mallId) => {
     console.log("Delete Clicked", shopId, mallId);
     let confirm = window.confirm("Are you Sure you want to Delete this Shop");
@@ -15,10 +20,12 @@ const Shops = ({ shops, malls }) => {
     if (confirm) {
       let deletedShop = malls.filter((x) => x.id === mallId);
       console.log("Deleted Shop", deletedShop);
-      let filteredShop = deletedShop[0].shops.filter(x => x.id !== shopId)
-      
-      await fireStore.collection("mallInfo").doc(mallId).update({shops: [...filteredShop]});
+      let filteredShop = deletedShop[0].shops.filter((x) => x.id !== shopId);
 
+      await fireStore
+        .collection("mallInfo")
+        .doc(mallId)
+        .update({ shops: [...filteredShop] });
     }
   };
 
@@ -47,9 +54,10 @@ const Shops = ({ shops, malls }) => {
             name={shop.shops[0]?.shopName}
             imgUrl={shop.shops[0]?.shopImages[0]?.shopImgUrl}
             address={shop.mallName}
-            key={shop.mall_id}
+            key={shop.mallId}
             id={shop.shops[0].id}
             onShopDelete={handleShopDelete}
+            func={handleSingleShopClick}
           />
         ))}
       </div>
