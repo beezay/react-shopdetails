@@ -51,11 +51,11 @@ const Shops = ({ shops, malls }) => {
           <Card
             className="image-container"
             shop={shop}
-            name={shop.shops[0]?.shopName}
-            imgUrl={shop.shops[0]?.shopImages[0]?.shopImgUrl}
-            address={shop.mallName}
-            key={shop.mallId}
-            id={shop.shops[0].id}
+            name={shop?.shops[0]?.shopName}
+            imgUrl={shop?.shops[0]?.shopImages[0]?.shopImgUrl}
+            address={shop?.mallName}
+            key={shop?.mallId}
+            id={shop?.shops[0]?.id}
             onShopDelete={handleShopDelete}
             func={handleSingleShopClick}
           />

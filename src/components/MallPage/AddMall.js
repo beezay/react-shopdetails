@@ -63,7 +63,9 @@ const AddMall = ({ history }) => {
       addedShopsDetails.map((shop) =>
         Promise.all(
           shop.shopImages.map((item) =>
-            storage.ref(`shopImages/${item.shopImgUrl.name}`).put(item.shopImgUrl)
+            storage
+              .ref(`shopImages/${item.shopImgUrl.name}`)
+              .put(item.shopImgUrl)
           )
         )
       )
@@ -73,7 +75,10 @@ const AddMall = ({ history }) => {
       addedShopsDetails.map((shop) =>
         Promise.all(
           shop.shopImages.map((item) =>
-            storage.ref("shopImages").child(item?.shopImgUrl?.name).getDownloadURL()
+            storage
+              .ref("shopImages")
+              .child(item?.shopImgUrl?.name)
+              .getDownloadURL()
           )
         )
       )
@@ -97,6 +102,7 @@ const AddMall = ({ history }) => {
   };
 
   const handleMallSubmit = async (data) => {
+    let newId = Date.now().toString();
     setIsSubmitting(true);
     let shopImgArr;
     if (addedShopsDetails.length > 0) {
@@ -106,17 +112,20 @@ const AddMall = ({ history }) => {
 
     const shopArr = shopDetails(shopImgArr);
 
-    await storage.ref(`mallImages/${image.name}`).put(image);
+    let imageName = newId + image.name;
+
+    await storage.ref(`mallImages/${imageName}`).put(image);
     const imgUrl = await storage
       .ref("mallImages")
-      .child(image.name)
+      .child(imageName)
       .getDownloadURL();
 
     const mallData = {
+      id: newId,
       ...data,
       mallImage: {
         imageUrl: imgUrl,
-        imageName: image.name,
+        imageName: imageName,
       },
       shops: shopArr,
     };

@@ -1,6 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router";
-import { fireStore } from "../../firebase/firebase";
+import { fireStore, storage } from "../../firebase/firebase";
 import Card from "../common/Card";
 import SearchMall from "../Search/SearchMall";
 
@@ -21,6 +21,8 @@ const Malls = ({ allMalls, filterMalls }) => {
         .doc(mallId)
         .delete()
         .then(() => console.log("Mall Deleted"));
+
+        // await storage.ref("mallImages").child()
     }
   };
 
