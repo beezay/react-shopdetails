@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import { fireStore } from "../../firebase/firebase";
 import Card from "../common/Card";
+import ShopCard from "../common/ShopCard";
 import SearchMall from "../Search/SearchMall";
 
 const AdminAllShops = () => {
@@ -8,6 +10,8 @@ const AdminAllShops = () => {
   const [allShops, setAllShops] = useState([]);
   const [filteredShops, setFilteredShops] = useState([]);
   const [isLoading, setIsLoading] = useState(null);
+
+  const history = useHistory()
 
   useEffect(() => {
     const fetchMalls = async () => {
@@ -61,6 +65,11 @@ const AdminAllShops = () => {
     }
   };
 
+  const handleInfoClick = (shopId, mallId) => {
+    console.log(shopId, mallId);
+    history.push(`/shop/${mallId}/${shopId}`)
+  };
+
   return (
     <div className="malls-wrapper">
       <div className="mall-heading">
@@ -72,14 +81,15 @@ const AdminAllShops = () => {
         <div className="image-wrapper">
           {filteredShops?.map((shops) =>
             shops.shops.map((shop) => (
-              <Card
+              <ShopCard
                 className="image-container"
-                //   func={handleInfoClick}
+                func={handleInfoClick}
                 name={shop?.shopName}
                 address={shops?.mallName}
                 imgUrl={shop?.shopImages[0]?.shopImgUrl}
                 key={shop?.id}
                 id={shop?.id}
+                mallId={shops.mallId}
                 // onClick={()=>handleInfoClick(mall.id)}
               />
             ))
