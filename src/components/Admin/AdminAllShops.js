@@ -9,27 +9,6 @@ const AdminAllShops = () => {
   const [filteredShops, setFilteredShops] = useState([]);
   const [isLoading, setIsLoading] = useState(null);
 
-  const onChangeSearch = (e) => {
-    console.log(e.target.value);
-
-    if (e.target.value) {
-      // allShops = [];
-      const searchRegex = new RegExp(e.target.value, "gi");
-
-      let searchedShop = allShops.map((shops) => {
-        shops.shops = shops.shops.filter((shop) =>
-          shop.shopName.match(searchRegex)
-        );
-        return shops;
-      });
-      // debugger
-      console.log("SearchedShop", searchedShop);
-      setFilteredShops(searchedShop);
-    } else {
-      setFilteredShops(allShops);
-    }
-  };
-
   useEffect(() => {
     const fetchMalls = async () => {
       const fetchedMalls = await fireStore.collection("mallInfo").get();
@@ -56,12 +35,31 @@ const AdminAllShops = () => {
     };
     fetchMalls();
     setIsLoading(false);
-    // return fetchMalls;
+    return fetchMalls;
   }, []);
-  console.log("Malls", malls);
 
-  // setShops(allShops)
-  console.log("Shops =>", allShops);
+  console.log("All Shops=>", allShops);
+  console.log("All Malls=>", malls);
+
+  const onChangeSearch = (e) => {
+    console.log(e.target.value);
+    console.log("AllShops", allShops);
+    // let newData = [...malls]
+    if (e.target.value) {
+      const searchRegex = new RegExp(e.target.value, "gi");
+      let searchedShop = allShops.map((shops) => {
+        shops.shops = shops.shops.filter((shop) =>
+          shop.shopName.match(searchRegex)
+        );
+        return shops;
+      });
+      console.log("SearchedShop", searchedShop);
+      setFilteredShops(searchedShop);
+    } else {
+      console.log("AllShops", allShops);
+      setFilteredShops(malls);
+    }
+  };
 
   return (
     <div className="malls-wrapper">
