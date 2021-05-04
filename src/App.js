@@ -14,11 +14,17 @@ import EditMall from "./components/MallPage/EditMall";
 import MallsDetails from "./components/MallPage/MallsDetails";
 import ShopId from "./components/Shop/ShopId";
 import { fireStore } from "./firebase/firebase";
-import { fetchMalls } from "./redux/MallSlice";
+import { fetchMalls, setAdmin } from "./redux/MallSlice";
+import { loginStatus } from "./utils/CheckLogin";
 
 const App = () => {
   // const [showSearchbar, setShowSearchbar] = useState(false)
   const dispatch = useDispatch();
+  dispatch(setAdmin(loginStatus));
+
+  useEffect(() => {
+    dispatch(setAdmin(loginStatus));
+  }, []);
 
   // useEffect(() => {
   //   const data = fireStore
@@ -52,8 +58,8 @@ const App = () => {
         <Route path="/editMall/:id" render={() => <EditMall />} />
         <Route path="/malls/:id" render={() => <MallsDetails />} />
         <Route path="/shop/:mallid/:shopid" render={() => <ShopId />} />
-        <Route exact path="/malls" render={() => <AdminAllMalls  />} />
-        <Route exact path="/shops" render={() => <AdminAllShops  />} />
+        <Route exact path="/malls" render={() => <AdminAllMalls />} />
+        <Route exact path="/shops" render={() => <AdminAllShops />} />
         <Route path="/shops" render={() => <Shops />} />
         <Route path="/admin/register" render={() => <RegisterAdmin />} />
         <Route path="/admin/login" render={() => <LoginAdmin />} />

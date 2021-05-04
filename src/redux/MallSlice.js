@@ -8,7 +8,7 @@ const mallSlice = createSlice({
     malls: [],
     addedShops: [],
     newAddedShops: [],
-    isAdmin: true,
+    isAdmin: null,
   },
   reducers: {
     addShops: (state, action) => {
@@ -75,6 +75,14 @@ const mallSlice = createSlice({
       };
     },
 
+    setAdmin: (state, action) => {
+      console.log('Admin CHeck',action.payload);
+      return {
+        ...state,
+        isAdmin: action.payload === "true" ? true : false
+      };
+    },
+
     fetchMalls: (state, action) => {
       console.log("Malls Fetched", action.payload);
       return {
@@ -92,6 +100,7 @@ export const {
   removeShop,
   removeSingleShopImage,
   resetShops,
+  setAdmin,
 } = mallSlice.actions;
 
 export const selectedAllMalls = (state) => state.malls.malls;

@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router";
-import { SelectIsAdmin, selectedAllMalls } from "../../redux/MallSlice";
+import {
+  SelectIsAdmin,
+  selectedAllMalls,
+  setAdmin,
+} from "../../redux/MallSlice";
 import SearchMall from "../Search/SearchMall";
 import "./Dashboard.css";
 import { fireStore } from "../../firebase/firebase";
 import { fetchMalls } from "../../redux/MallSlice";
 import Malls from "./Malls";
 import Shops from "./Shops";
+import { loginStatus } from "../../utils/CheckLogin";
 const Dashboard = ({ history }) => {
   // const allMalls = useSelector(selectedAllMalls);
 
@@ -16,8 +21,9 @@ const Dashboard = ({ history }) => {
   const [loading, setLoading] = useState(null);
 
   const dispatch = useDispatch();
-
+  dispatch(setAdmin(loginStatus));
   const isAdmin = useSelector(SelectIsAdmin);
+  console.log("IS ADMIN", isAdmin, loginStatus);
 
   useEffect(() => {
     const fetchMalls = async () => {
