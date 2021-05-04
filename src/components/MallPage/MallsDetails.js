@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import uuid from "react-uuid";
 import { fireStore, storage } from "../../firebase/firebase";
-import { selectedAllMalls } from "../../redux/MallSlice";
+import { selectedAllMalls, SelectIsAdmin } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
 import Malls from "../HomePage/Malls";
 import "./Details.css";
@@ -15,6 +15,8 @@ const MallsDetails = () => {
   const [addShopStatus, setAddShopStatus] = useState(false);
   const [shopImages, setShopImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isAdmin = useSelector(SelectIsAdmin);
 
   const {
     handleSubmit,
@@ -49,8 +51,8 @@ const MallsDetails = () => {
   const history = useHistory();
 
   const handleShopClick = (shopId) => {
-    history.push(`/shop/${id}/${shopId}`)
-  }
+    history.push(`/shop/${id}/${shopId}`);
+  };
 
   const goToEditMall = () => {
     history.push(`/editMall/${id}`);
@@ -174,20 +176,22 @@ const MallsDetails = () => {
         </div>
       )}
       <div className="container mt-2">
-        <div className="d-flex justify-content-between flex-wrap">
-          <button
-            className="m-0 btn btn-outline-info"
-            onClick={() => setAddShopStatus(true)}
-          >
-            Add Shop
-          </button>
-          <button
-            className="m-0 btn btn-outline-success"
-            onClick={goToEditMall}
-          >
-            Edit Mall
-          </button>
-        </div>
+        {isAdmin && (
+          <div className="d-flex justify-content-between flex-wrap">
+            <button
+              className="m-0 btn btn-outline-info"
+              onClick={() => setAddShopStatus(true)}
+            >
+              Add Shop
+            </button>
+            <button
+              className="m-0 btn btn-outline-success"
+              onClick={goToEditMall}
+            >
+              Edit Mall
+            </button>
+          </div>
+        )}
         {mall.length && (
           <div className="container-fluid m-0">
             <div className="mall-info text-center mt-1">
@@ -209,9 +213,14 @@ const MallsDetails = () => {
                 <div className=" mt-5 d-flex">
                   {mall[0].shops &&
                     mall[0].shops.map((shop) => (
-                      <div className="image-container card-img mr-3" onClick={()=>handleShopClick(shop.id)}>
+                      <div
+                        className="image-container card-img mr-3"
+                        onClick={() => handleShopClick(shop.id)}
+                      >
                         <div className="detail-containerr">
-                          <h3> {shop?.shopName} </h3>
+                          <h3 style={{ color: "#f1f2f6" }}>
+                            {shop?.shopName}{" "}
+                          </h3>
                         </div>
                         <img src={shop?.shopImages[0]?.shopImgUrl} alt="" />
                       </div>

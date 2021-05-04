@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { fireStore } from "../../firebase/firebase";
 import Card from "../common/Card";
+import SearchMall from "../Search/SearchMall";
 
 const AdminAllMalls = () => {
   const [allMalls, setAllMalls] = useState();
-  const [loading, setLoading] = useState(true)
+  const [filteredMalls, setFilteredMalls] = useState()
+  const [loading, setLoading] = useState(true);
 
-  const history = useHistory()
+  const history = useHistory();
 
   useEffect(() => {
     const fetchMalls = async () => {
@@ -20,9 +22,10 @@ const AdminAllMalls = () => {
         })
       );
       setAllMalls(malls);
+      setFilteredMalls(malls)
     };
     fetchMalls();
-    setLoading(false)
+    setLoading(false);
     return fetchMalls;
   }, []);
 
@@ -31,16 +34,30 @@ const AdminAllMalls = () => {
     history.push(`malls/${mallId}`);
   };
 
+  const onChangeSearch = (e) => {
+    console.log(e.target.value);
+    if (e.target.value) {
+      const searchRegex = new RegExp(e.target.value, "gi");
+      const searchedMall = allMalls.filter((mall) =>
+        mall.mallName.match(searchRegex)
+      );
+      // debugger
+      setFilteredMalls(searchedMall);
+    } else {
+      setFilteredMalls(allMalls);
+    }
+  };
+
   return (
     <div className="malls-wrapper">
       <div className="mall-heading">
         <h2>MALLS</h2>
-        {/* <SearchMall /> */}
+        <SearchMall onchange={onChangeSearch} />
       </div>
-      {loading && <h4>LOADING...</h4> }
-      {allMalls && (
+      {loading && <h4>LOADING...</h4>}
+      {filteredMalls && (
         <div className="image-wrapper">
-          {allMalls.map((mall) => (
+          {filteredMalls.map((mall) => (
             <Card
               className="image-container"
               func={handleInfoClick}

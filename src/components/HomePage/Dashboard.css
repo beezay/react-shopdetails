@@ -40,12 +40,12 @@
   box-shadow: 2px 2px 4px 2px #ddd;
   border-radius: 8px;
   margin: 2px 0;
-  position:relative;
+  position: relative;
 }
 
 .show-more {
- float: right;
-  right:0;
+  float: right;
+  right: 0;
   margin-left: auto;
   margin-right: 1.5rem;
   font-size: 1.2rem;
@@ -142,6 +142,11 @@
   letter-spacing: 5px;
 }
 
+.image-container .detail-container h4 {
+  color: #f1f2f6;
+
+}
+
 .image-container img {
   min-width: 100%;
   min-height: 100%;
@@ -160,4 +165,3 @@
   transform: scale(1.2);
   transform-origin: center;
 }
-

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router";
-import { selectedAllMalls } from "../../redux/MallSlice";
+import { SelectIsAdmin, selectedAllMalls } from "../../redux/MallSlice";
 import SearchMall from "../Search/SearchMall";
 import "./Dashboard.css";
 import { fireStore } from "../../firebase/firebase";
@@ -17,7 +17,9 @@ const Dashboard = ({ history }) => {
 
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
+  const isAdmin = useSelector(SelectIsAdmin);
+
+  useEffect(() => {
     const fetchMalls = async () => {
       setLoading(true);
       const fetchedMalls = await fireStore.collection("mallInfo").get();
@@ -75,9 +77,11 @@ const Dashboard = ({ history }) => {
       <div className="dashboard-header">
         {loading && <p>Loading...</p>}
         <div className="btn-wrapper">
-          <button className="btn-add-mall" onClick={handleAddNewMall}>
-            ADD NEW MALL
-          </button>
+          {isAdmin && (
+            <button className="btn-add-mall" onClick={handleAddNewMall}>
+              ADD NEW MALL
+            </button>
+          )}
         </div>
         <SearchMall onchange={onChangeSearch} />
       </div>

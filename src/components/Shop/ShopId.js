@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { useParams, withRouter } from "react-router";
 import uuid from "react-uuid";
 import { fireStore, storage } from "../../firebase/firebase";
+import { SelectIsAdmin } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
 import "./Shop.css";
 
@@ -21,6 +23,8 @@ const ShopId = (props) => {
   const [editShop, setEditShop] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(null);
   const [shopImages, setShopImages] = useState([]);
+
+  const isAdmin = useSelector(SelectIsAdmin);
 
   //   IMPORTING REACT HOOK FORM
   const {
@@ -181,11 +185,16 @@ const ShopId = (props) => {
           <h5> {shop[0]?.shopDesc} </h5>
         </div>
       </div>
-      <div className="btn-wrapper">
-        <button className="btn-add-mall ml-5" onClick={() => setEditShop(true)}>
-          Edit Shop
-        </button>
-      </div>
+      {isAdmin && (
+        <div className="btn-wrapper">
+          <button
+            className="btn-add-mall ml-5"
+            onClick={() => setEditShop(true)}
+          >
+            Edit Shop
+          </button>
+        </div>
+      )}
       <div className="container-fluid text-center py-4">
         <div className="container d-flex align-items-center shop-container">
           {shop[0]?.shopImages.map((img) => (
