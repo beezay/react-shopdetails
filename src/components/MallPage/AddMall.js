@@ -112,7 +112,7 @@ const AddMall = ({ history }) => {
 
     const shopArr = shopDetails(shopImgArr);
 
-    let imageName = newId + image.name;
+    let imageName = newId + 'mall';
 
     await storage.ref(`mallImages/${imageName}`).put(image);
     const imgUrl = await storage
@@ -124,6 +124,7 @@ const AddMall = ({ history }) => {
       id: newId,
       ...data,
       mallImage: {
+        imageId: newId,
         imageUrl: imgUrl,
         imageName: imageName,
       },
@@ -132,7 +133,7 @@ const AddMall = ({ history }) => {
 
     console.log(mallData);
 
-    fireStore.collection("mallInfo").add(mallData);
+    fireStore.collection("mallInfo").doc(newId).set(mallData);
 
     setImage(null);
     reset({ defaultValue: "" });

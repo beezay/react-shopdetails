@@ -16,13 +16,21 @@ const Malls = ({ allMalls, filterMalls }) => {
     console.log(mallId);
     let confirm = window.confirm("Are you sure to Delete Mall??");
     if (confirm) {
-      await fireStore
-        .collection("mallInfo")
-        .doc(mallId)
-        .delete()
-        .then(() => console.log("Mall Deleted"));
+      try {
+        await fireStore
+          .collection("mallInfo")
+          .doc(mallId)
+          .delete()
+          .then(() => console.log("Mall Deleted"));
 
-        // await storage.ref("mallImages").child()
+        await storage
+          .ref("mallImages")
+          .child(`${mallId}mall`)
+          .delete()
+          .then(() => console.log("Image Deleted"));
+      } catch (error) {
+        console.log("Check Malls.js");
+      }
     }
   };
 
