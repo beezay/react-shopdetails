@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { Route, Switch, withRouter } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { Redirect, Route, Switch, withRouter } from "react-router";
 import AdminAllMalls from "./components/Admin/AdminAllMalls";
 import AdminAllShops from "./components/Admin/AdminAllShops";
 import LoginAdmin from "./components/Admin/LoginAdmin";
@@ -14,14 +14,14 @@ import EditMall from "./components/MallPage/EditMall";
 import MallsDetails from "./components/MallPage/MallsDetails";
 import ShopId from "./components/Shop/ShopId";
 import { fireStore } from "./firebase/firebase";
-import { fetchMalls, setAdmin } from "./redux/MallSlice";
+import { fetchMalls, SelectIsAdmin, setAdmin } from "./redux/MallSlice";
 import { loginStatus } from "./utils/CheckLogin";
 
 const App = () => {
   // const [showSearchbar, setShowSearchbar] = useState(false)
   const dispatch = useDispatch();
   dispatch(setAdmin(loginStatus));
-
+  const isAdmin = useSelector(SelectIsAdmin);
   useEffect(() => {
     dispatch(setAdmin(loginStatus));
   }, []);
@@ -54,8 +54,14 @@ const App = () => {
           path="/"
           render={() => <Dashboard showSearchbar="false" />}
         />
-        <Route path="/addMall" render={() => <AddMall />} />
-        <Route path="/editMall/:id" render={() => <EditMall />} />
+        <Route
+          path="/addMall"
+          render={() => (isAdmin ? <AddMall /> : <Redirect to="/" />)}
+        />
+        <Route
+          path="/editMall/:id"
+          render={() => (isAdmin ? <EditMall /> : <Redirect to="/" />)}
+        />
         <Route path="/malls/:id" render={() => <MallsDetails />} />
         <Route path="/shop/:mallid/:shopid" render={() => <ShopId />} />
         <Route exact path="/malls" render={() => <AdminAllMalls />} />
@@ -63,6 +69,7 @@ const App = () => {
         <Route path="/shops" render={() => <Shops />} />
         <Route path="/admin/register" render={() => <RegisterAdmin />} />
         <Route path="/admin/login" render={() => <LoginAdmin />} />
+        <Redirect to="/" />
         {/* <Dashboard /> */}
       </Switch>
     </>

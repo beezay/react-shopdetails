@@ -8,8 +8,8 @@ const Navbar = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a className="navbar-brand" href="#">
-        Logo
+      <a className="navbar-brand" href="/">
+        WEN
       </a>
       <button
         className="navbar-toggler"
