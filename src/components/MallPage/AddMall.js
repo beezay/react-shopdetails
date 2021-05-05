@@ -112,7 +112,7 @@ const AddMall = ({ history }) => {
 
     const shopArr = shopDetails(shopImgArr);
 
-    let imageName = newId + 'mall';
+    let imageName = newId + "mall";
 
     await storage.ref(`mallImages/${imageName}`).put(image);
     const imgUrl = await storage
@@ -143,6 +143,7 @@ const AddMall = ({ history }) => {
     }, 5000);
     dispatch(removeShop());
     setIsSubmitting(false);
+    history.push("/");
   };
 
   let submitBtnClassName = "w-100 btn btn-lg btn-outline-primary btn-save";
