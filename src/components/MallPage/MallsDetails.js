@@ -114,12 +114,13 @@ const MallsDetails = () => {
       .doc(id)
       .update({ shops: [...dbShops, shopData] });
     reset();
-    setIsSubmitting(false);
-    setAddShopStatus(false);
+    setDbShops([...dbShops, shopData]);
     let newMall = [...mall];
     newMall[0].shops = [...dbShops, shopData];
     setMall(newMall);
     setShopImages([]);
+    setIsSubmitting(false);
+    setAddShopStatus(false);
   };
   console.log("Mall", mall);
 
