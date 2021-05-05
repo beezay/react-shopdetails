@@ -36,6 +36,50 @@ export const deleteShopStorage = async (malls, mallId, shopId) => {
   }
 };
 
-export const deleteMallStorage = () => {
-    console.log("delete mall Storage");
-}
+export const deleteMallStorage = async (malls, mallId) => {
+  console.log("delete mall Storage", malls, mallId);
+
+  const mallToDelete = malls.find((x) => x.id === mallId);
+  const remainingMalls = malls.filter((x) => x.id !== mallId);
+  console.log("Deleted Mall=>", mallToDelete);
+
+  const shopsToDelete = mallToDelete.shops;
+  console.log(shopsToDelete);
+
+  const allImages = mallToDelete?.shops?.reduce((arr, shop) => {
+    const images = shop?.shopImages?.reduce((imgArr, img) => {
+      imgArr.push(img.shopImgId);
+      return imgArr;
+    }, []);
+    arr = [...arr, ...images];
+    return arr;
+  }, []);
+
+  console.log("All Images", allImages);
+  try {
+    if (allImages.length > 0) {
+      await Promise.all(
+        allImages?.map((img) =>
+          storage
+            .ref("shopImages")
+            .child(img)
+            .delete()
+            .then(() => console.log("Image Deleted"))
+        )
+      );
+    }
+    await storage
+      .ref("mallImages")
+      .child(`${mallId}mall`)
+      .delete()
+      .then(() => console.log("Image Deleted"));
+
+    await fireStore
+      .collection("mallInfo")
+      .doc(mallId)
+      .delete()
+      .then(() => console.log("Mall Deleted"));
+  } catch (error) {
+    console.log("Check Malls.js");
+  }
+};

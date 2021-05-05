@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router";
 import { fireStore, storage } from "../../firebase/firebase";
+import { deleteMallStorage } from "../../utils/Delete";
 import Card from "../common/Card";
 import SearchMall from "../Search/SearchMall";
 
@@ -16,21 +17,7 @@ const Malls = ({ allMalls, filterMalls }) => {
     console.log(mallId);
     let confirm = window.confirm("Are you sure to Delete Mall??");
     if (confirm) {
-      try {
-        await fireStore
-          .collection("mallInfo")
-          .doc(mallId)
-          .delete()
-          .then(() => console.log("Mall Deleted"));
-
-        await storage
-          .ref("mallImages")
-          .child(`${mallId}mall`)
-          .delete()
-          .then(() => console.log("Image Deleted"));
-      } catch (error) {
-        console.log("Check Malls.js");
-      }
+      await deleteMallStorage(filterMalls, mallId);
     }
   };
 
