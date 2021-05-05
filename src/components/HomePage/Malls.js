@@ -39,8 +39,6 @@ const Malls = ({ allMalls, filterMalls }) => {
             onMallDelete={handleSingleMallDelete}
           />
         ))}
-        {/* <Card className="image-container" func={handleInfoClick} />
-        <Card className="image-container" func={handleInfoClick} /> */}
       </div>
     </div>
   );

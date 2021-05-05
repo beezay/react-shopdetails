@@ -13,6 +13,7 @@ import { deleteShopStorage } from "../../utils/Delete";
 import Alert from "../common/Alert";
 import Card from "../common/Card";
 import Malls from "../HomePage/Malls";
+import SearchMall from "../Search/SearchMall";
 import "./Details.css";
 const MallsDetails = () => {
   const [allMalls, setAllMalls] = useState([]);
@@ -220,6 +221,9 @@ const MallsDetails = () => {
               <div className="detail-container">
                 <h1> {mall[0].mallName} </h1>
                 <h3>{mall[0].mallAddress} </h3>
+              </div>
+              <div className="searchbar">
+                <SearchMall title="Search Shops" />
               </div>
             </div>
             <div className="single-mall-image-container">

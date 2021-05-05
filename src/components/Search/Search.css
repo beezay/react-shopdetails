@@ -6,6 +6,7 @@
   border: 2px solid grey !important;
   border-radius: 8px;
   width: 15rem !important;
+  height: 3.1rem!important;
   text-align: center;
   font-weight: bolder;
   letter-spacing: 2px;
@@ -25,10 +26,8 @@
 .search input:focus,
 .search input:hover {
   width: 22rem !important;
-  height: 4rem;
+  height: 3rem;
   outline: none;
-  border: none !important;
-  border-bottom: 1px solid #3742fa !important;
 }
 
 .search input:focus::placeholder,

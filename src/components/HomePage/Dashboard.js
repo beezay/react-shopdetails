@@ -14,6 +14,7 @@ import Malls from "./Malls";
 import Shops from "./Shops";
 import { loginStatus } from "../../utils/CheckLogin";
 import NoData from "../common/NoData";
+import AddButton from "../common/AddButton";
 const Dashboard = ({ history }) => {
   // const allMalls = useSelector(selectedAllMalls);
 
@@ -88,11 +89,7 @@ const Dashboard = ({ history }) => {
         <div className="container-fluid dashboard-wrapper h-100">
           <div className="dashboard-header">
             <div className="btn-wrapper">
-              {isAdmin && (
-                <button className="btn-add-mall" onClick={handleAddNewMall}>
-                  ADD NEW MALL
-                </button>
-              )}
+              {isAdmin && <AddButton onClick={handleAddNewMall} />}
             </div>
             {allMalls.length > 0 && <SearchMall onchange={onChangeSearch} />}
           </div>

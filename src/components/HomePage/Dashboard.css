@@ -17,23 +17,7 @@
   margin: 0 auto;
 }
 
-.btn-add-mall {
-  padding: 12px;
-  background-color: #0a3d62dc;
-  color: #ced6e0;
-  letter-spacing: 2px;
-  font-weight: 800;
-  font-size: 1.2rem;
-  border-radius: 8px;
-  border-style: none;
-  outline: none;
-  transition: all 0.5s ease-out;
-}
 
-.btn-add-mall:hover {
-  background-color: #0a3d62;
-  color: #dcdde1;
-}
 
 /* MALLS CONTAINER CSS  */
 .wrapper-container {

@@ -1,13 +1,13 @@
 import React from "react";
 import "./Search.css";
-const SearchMall = ({onchange}) => {
+const SearchMall = ({onchange, title}) => {
   return (
     <div className="search mb-2">
       <form className="form-inline my-2 my-lg-0">
         <input
           className="form-control mr-sm-2"
           type="text"
-          placeholder="Search Mall..."
+          placeholder={title ? title : "Search Mall..."}
           onChange={onchange}
           defaultValue=""
         />

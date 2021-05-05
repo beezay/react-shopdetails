@@ -4,6 +4,7 @@ import { useHistory } from "react-router";
 import { fireStore, storage } from "../../firebase/firebase";
 import { SelectIsAdmin } from "../../redux/MallSlice";
 import { deleteMallStorage } from "../../utils/Delete";
+import AddButton from "../common/AddButton";
 import Card from "../common/Card";
 import SearchMall from "../Search/SearchMall";
 
@@ -61,7 +62,7 @@ const AdminAllMalls = () => {
     console.log(mallId);
     let confirm = window.confirm("Are you sure to Delete Mall??");
     if (confirm) {
-      await deleteMallStorage(filteredMalls, mallId)
+      await deleteMallStorage(filteredMalls, mallId);
     }
   };
 
@@ -70,11 +71,7 @@ const AdminAllMalls = () => {
       <div className="mall-heading d-flex justify-content-between align-items-center w-100">
         <h2>MALLS</h2>
         <SearchMall onchange={onChangeSearch} />
-        {isAdmin && (
-          <button className="btn-add-mall" onClick={handleAddNewMall}>
-            ADD NEW MALL
-          </button>
-        )}
+        {isAdmin && <AddButton onClick={handleAddNewMall} />}
       </div>
       {loading && <h4>LOADING...</h4>}
       {filteredMalls && (

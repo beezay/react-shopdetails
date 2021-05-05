@@ -138,3 +138,9 @@
     font-size: 22px;
     color: coral;
 }
+
+.searchbar {
+
+    margin: 0 auto !important;
+    width: max-content;
+}
