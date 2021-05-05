@@ -144,3 +144,9 @@
     margin: 0 auto !important;
     width: max-content;
 }
+
+.shop-card-container {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 45px;
+}
