@@ -6,6 +6,7 @@ import uuid from "react-uuid";
 import { fireStore, storage } from "../../firebase/firebase";
 import { SelectIsAdmin } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
+import FileTypeError from "../common/FileTypeError";
 import "./Shop.css";
 
 const ShopId = (props) => {
@@ -24,6 +25,8 @@ const ShopId = (props) => {
   const [isSubmitting, setIsSubmitting] = useState(null);
   const [shopImages, setShopImages] = useState([]);
 
+  const [imageError, setImageError] = useState(null);
+
   const isAdmin = useSelector(SelectIsAdmin);
 
   //   IMPORTING REACT HOOK FORM
@@ -33,6 +36,8 @@ const ShopId = (props) => {
     register,
     formState: { errors },
   } = useForm();
+
+  const imageTypes = ["image/png", "image/jpg", "image/jpeg"];
 
   //! FETCHING SINGLE MALL AND SINGLE SHOP
   useEffect(() => {
@@ -94,17 +99,28 @@ const ShopId = (props) => {
   };
 
   const handleAddedShopImages = (e) => {
-    const shopImagesList = Object.values(e.target.files);
-    // console.log(shopImagesList,"shopImageList");
-    setShopImages(shopImagesList);
-    console.log(shopImages, "shopImageList");
+    // const shopImagesList = Object.values(e.target.files);
+    const imageList = Object.values(e.target.files).map((file) => {
+      let imgList = [];
+      if (imageTypes.includes(file.type)) {
+        console.log(file);
+        imgList.push(file);
+        setImageError("");
+      } else {
+        setImageError("Please Select only  PNG/JPG");
+      }
+      return imgList;
+    });
+    setShopImages(imageList);
+    // console.log(shopImages, "shopImageList");
   };
 
   const shopImageUploads = async (uniqueId) => {
     console.log("ShopImages", shopImages);
+
     await Promise.all(
       shopImages.map((shopImg) =>
-        storage.ref(`shopImages/${uniqueId}${shopImg.name}`).put(shopImg)
+        storage.ref(`shopImages/${uniqueId}${shopImg[0].name}`).put(shopImg[0])
       )
     );
 
@@ -112,7 +128,7 @@ const ShopId = (props) => {
       shopImages.map((shopImg) =>
         storage
           .ref("shopImages")
-          .child(`${uniqueId}${shopImg?.name}`)
+          .child(`${uniqueId}${shopImg[0]?.name}`)
           .getDownloadURL()
       )
     );
@@ -128,7 +144,7 @@ const ShopId = (props) => {
     let shopImgArr;
     shopImgArr = await shopImageUploads(uniqueId);
     const addedShopImages = shopImgArr.map((imgUrl, idx) => ({
-      shopImgId: `${uniqueId}${shopImages[idx].name}`,
+      shopImgId: `${uniqueId}${shopImages[idx][0].name}`,
       shopImgUrl: imgUrl,
     }));
     // console.log(shopImagesData, "Arr");
@@ -199,9 +215,10 @@ const ShopId = (props) => {
                   <span className="py-0 mt-2 text-info font-weight-light">
                     First Image will be shown as Thumbnail
                   </span>
+                  {imageError && <FileTypeError error={imageError} />}
                   {shopImages &&
                     shopImages.map((x) => (
-                      <p className="text-dark"> {x.name} </p>
+                      <p className="text-dark"> {x[0].name} </p>
                     ))}
                 </div>
                 <button
