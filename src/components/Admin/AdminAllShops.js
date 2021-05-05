@@ -11,7 +11,7 @@ const AdminAllShops = () => {
   const [filteredShops, setFilteredShops] = useState([]);
   const [isLoading, setIsLoading] = useState(null);
 
-  const history = useHistory()
+  const history = useHistory();
 
   useEffect(() => {
     const fetchMalls = async () => {
@@ -67,7 +67,21 @@ const AdminAllShops = () => {
 
   const handleInfoClick = (shopId, mallId) => {
     console.log(shopId, mallId);
-    history.push(`/shop/${mallId}/${shopId}`)
+    history.push(`/shop/${mallId}/${shopId}`);
+  };
+
+  const handleShopDelete = async (shopId, mallId) => {
+    console.log(shopId, mallId);
+    const filteredMalls = malls.filter((mall) => mall.id === mallId);
+    console.log("Filtered Malls", filteredMalls);
+    const remainingShops = filteredMalls[0].shops.filter(
+      (shop) => shop.id !== shopId
+    );
+    console.log("Remaining Shops", remainingShops);
+    await fireStore
+      .collection("mallInfo")
+      .doc(mallId)
+      .update({ shops: [...remainingShops] });
   };
 
   return (
@@ -91,6 +105,7 @@ const AdminAllShops = () => {
                 id={shop?.id}
                 mallId={shops.mallId}
                 // onClick={()=>handleInfoClick(mall.id)}
+                onShopDelete={handleShopDelete}
               />
             ))
           )}
