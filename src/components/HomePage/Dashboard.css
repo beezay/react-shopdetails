@@ -126,8 +126,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  min-height: 96%;
-  max-width: 98%;
+  min-height: 80%;
+  max-height: 85%;
+  min-width: 90%;
+  max-width: 96%;
+  /* border: 2px solid red; */
 }
 
 .image-container .detail-container h3 {

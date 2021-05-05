@@ -6,6 +6,7 @@ import uuid from "react-uuid";
 import { fireStore, storage } from "../../firebase/firebase";
 import { selectedAllMalls, SelectIsAdmin } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
+import Card from "../common/Card";
 import Malls from "../HomePage/Malls";
 import "./Details.css";
 const MallsDetails = () => {
@@ -64,17 +65,20 @@ const MallsDetails = () => {
     setShopImages(shopImageList);
   };
 
-  const shopImageUploads = async () => {
+  const shopImageUploads = async (shop_id) => {
     console.log("ShopImages", shopImages);
     await Promise.all(
       shopImages.map((shopImg) =>
-        storage.ref(`shopImages/${shopImg.name}`).put(shopImg)
+        storage.ref(`shopImages/${shop_id}${shopImg.name}`).put(shopImg)
       )
     );
 
     const shopImageUrl = await Promise.all(
       shopImages.map((shopImg) =>
-        storage.ref("shopImages").child(shopImg?.name).getDownloadURL()
+        storage
+          .ref("shopImages")
+          .child(`${shop_id}${shopImg.name}`)
+          .getDownloadURL()
       )
     );
     console.log(shopImageUrl);
@@ -86,10 +90,10 @@ const MallsDetails = () => {
     const shop_id = Date.now().toString();
     console.log(data);
     let shopImgArr;
-    shopImgArr = await shopImageUploads();
+    shopImgArr = await shopImageUploads(shop_id);
     console.log(shopImgArr);
-    const shopImagesData = shopImgArr.map((imgUrl) => ({
-      shopImgId: uuid(),
+    const shopImagesData = shopImgArr.map((imgUrl, idx) => ({
+      shopImgId: `${shop_id}${shopImages[idx].name}`,
       shopImgUrl: imgUrl,
     }));
     console.log(shopImagesData, "check");
@@ -110,6 +114,10 @@ const MallsDetails = () => {
     setMall(newMall);
   };
   console.log("Mall", mall);
+
+  const onShopDelete = (shopId, mallId) => {
+    console.log(shopId, mallId);
+  };
   return (
     <>
       {addShopStatus && (
@@ -213,18 +221,16 @@ const MallsDetails = () => {
                 <div className=" mt-5 d-flex">
                   {mall[0].shops &&
                     mall[0].shops.map((shop) => (
-                      <div
-                        className="image-container card-img mr-3"
-                        onClick={() => handleShopClick(shop.id)}
+                      <Card
                         key={shop.id}
-                      >
-                        <div className="detail-containerr">
-                          <h3 style={{ color: "#f1f2f6" }}>
-                            {shop?.shopName}{" "}
-                          </h3>
-                        </div>
-                        <img src={shop?.shopImages[0]?.shopImgUrl} alt="" />
-                      </div>
+                        className="image-container card-img mr-3"
+                        name={shop?.shopName}
+                        func={handleShopClick}
+                        shop={{ mallId: mall[0].id }}
+                        id={shop.id}
+                        imgUrl={shop?.shopImages[0]?.shopImgUrl}
+                        onShopDelete={onShopDelete}
+                      />
                     ))}
                 </div>
               </div>

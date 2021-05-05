@@ -52,10 +52,11 @@ const AdminAllShops = () => {
     if (e.target.value) {
       const searchRegex = new RegExp(e.target.value, "gi");
       let searchedShop = allShops.map((shops) => {
-        shops.shops = shops.shops.filter((shop) =>
+        let newShops={...shops};
+        newShops.shops = newShops.shops.filter((shop) =>
           shop.shopName.match(searchRegex)
         );
-        return shops;
+        return newShops;
       });
       console.log("SearchedShop", searchedShop);
       setFilteredShops(searchedShop);

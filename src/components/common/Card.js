@@ -18,7 +18,7 @@ const Card = (props) => {
         onClick={() => props.func(props?.id, props?.shop?.mallId)}
       >
         <h3> {props?.name}</h3>
-        <h4>{props?.address}</h4>
+        {props?.address && <h4>{props?.address}</h4>}
       </div>
       <img src={props?.imgUrl} alt={props?.name} />
       {isAdmin && showCross && (
