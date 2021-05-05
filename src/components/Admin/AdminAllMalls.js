@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router";
-import { fireStore } from "../../firebase/firebase";
+import { fireStore, storage } from "../../firebase/firebase";
+import { SelectIsAdmin } from "../../redux/MallSlice";
 import Card from "../common/Card";
 import SearchMall from "../Search/SearchMall";
 
 const AdminAllMalls = () => {
   const [allMalls, setAllMalls] = useState();
-  const [filteredMalls, setFilteredMalls] = useState()
+  const [filteredMalls, setFilteredMalls] = useState();
   const [loading, setLoading] = useState(true);
 
   const history = useHistory();
+
+  const isAdmin = useSelector(SelectIsAdmin);
 
   useEffect(() => {
     const fetchMalls = async () => {
@@ -22,7 +26,7 @@ const AdminAllMalls = () => {
         })
       );
       setAllMalls(malls);
-      setFilteredMalls(malls)
+      setFilteredMalls(malls);
     };
     fetchMalls();
     setLoading(false);
@@ -32,6 +36,10 @@ const AdminAllMalls = () => {
   const handleInfoClick = (mallId) => {
     console.log(mallId);
     history.push(`malls/${mallId}`);
+  };
+
+  const handleAddNewMall = () => {
+    history.push("/addMall");
   };
 
   const onChangeSearch = (e) => {
@@ -48,11 +56,38 @@ const AdminAllMalls = () => {
     }
   };
 
+  const handleSingleMallDelete = async (mallId) => {
+    console.log(mallId);
+    let confirm = window.confirm("Are you sure to Delete Mall??");
+    if (confirm) {
+      try {
+        await fireStore
+          .collection("mallInfo")
+          .doc(mallId)
+          .delete()
+          .then(() => console.log("Mall Deleted"));
+
+        await storage
+          .ref("mallImages")
+          .child(`${mallId}mall`)
+          .delete()
+          .then(() => console.log("Image Deleted"));
+      } catch (error) {
+        console.log("Check Malls.js");
+      }
+    }
+  };
+
   return (
     <div className="malls-wrapper">
-      <div className="mall-heading">
+      <div className="mall-heading d-flex justify-content-between align-items-center w-100">
         <h2>MALLS</h2>
         <SearchMall onchange={onChangeSearch} />
+        {isAdmin && (
+          <button className="btn-add-mall" onClick={handleAddNewMall}>
+            ADD NEW MALL
+          </button>
+        )}
       </div>
       {loading && <h4>LOADING...</h4>}
       {filteredMalls && (
@@ -66,7 +101,7 @@ const AdminAllMalls = () => {
               imgUrl={mall.mallImage.imageUrl}
               key={mall.id}
               id={mall.id}
-              // onClick={()=>handleInfoClick(mall.id)}
+              onMallDelete={handleSingleMallDelete}
             />
           ))}
         </div>

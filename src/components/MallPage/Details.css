@@ -60,6 +60,7 @@
     transform: translate(-50%, -50%);
     min-height: 96%;
     max-width: 98%;
+    border: 2px solid red;
 }
 
 .single-mall-image-container img {

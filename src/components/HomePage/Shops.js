@@ -1,6 +1,7 @@
 import React from "react";
 import { useHistory } from "react-router";
-import { fireStore } from "../../firebase/firebase";
+import { fireStore, storage } from "../../firebase/firebase";
+import { deleteShopStorage } from "../../utils/Delete";
 import Card from "../common/Card";
 import ShopCard from "../common/ShopCard";
 
@@ -16,16 +17,8 @@ const Shops = ({ shops, malls }) => {
   const handleShopDelete = async (shopId, mallId) => {
     console.log("Delete Clicked", shopId, mallId);
     let confirm = window.confirm("Are you Sure you want to Delete this Shop");
-    console.log("Confirm", confirm);
     if (confirm) {
-      let deletedShop = malls.filter((x) => x.id === mallId);
-      console.log("Deleted Shop", deletedShop);
-      let filteredShop = deletedShop[0].shops.filter((x) => x.id !== shopId);
-
-      await fireStore
-        .collection("mallInfo")
-        .doc(mallId)
-        .update({ shops: [...filteredShop] });
+      await deleteShopStorage(malls, mallId, shopId);
     }
   };
 

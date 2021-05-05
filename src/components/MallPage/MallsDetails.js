@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import uuid from "react-uuid";
 import { fireStore, storage } from "../../firebase/firebase";
-import { selectedAllMalls, SelectIsAdmin } from "../../redux/MallSlice";
+import {
+  resetShops,
+  selectedAllMalls,
+  SelectIsAdmin,
+} from "../../redux/MallSlice";
 import Alert from "../common/Alert";
+import Card from "../common/Card";
 import Malls from "../HomePage/Malls";
 import "./Details.css";
 const MallsDetails = () => {
@@ -36,9 +41,9 @@ const MallsDetails = () => {
         })
       );
       const singleMall = malls.filter((x) => x.id === id);
-      console.log(singleMall[0].shops, malls);
+      console.log(singleMall[0]?.shops, malls);
       setAllMalls(malls);
-      setDbShops(singleMall[0].shops);
+      setDbShops(singleMall[0]?.shops);
       setMall(singleMall);
     };
     fetchMalls();
@@ -49,6 +54,7 @@ const MallsDetails = () => {
   const { id } = useParams();
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const handleShopClick = (shopId) => {
     history.push(`/shop/${id}/${shopId}`);
@@ -64,17 +70,20 @@ const MallsDetails = () => {
     setShopImages(shopImageList);
   };
 
-  const shopImageUploads = async () => {
+  const shopImageUploads = async (shop_id) => {
     console.log("ShopImages", shopImages);
     await Promise.all(
       shopImages.map((shopImg) =>
-        storage.ref(`shopImages/${shopImg.name}`).put(shopImg)
+        storage.ref(`shopImages/${shop_id}${shopImg.name}`).put(shopImg)
       )
     );
 
     const shopImageUrl = await Promise.all(
       shopImages.map((shopImg) =>
-        storage.ref("shopImages").child(shopImg?.name).getDownloadURL()
+        storage
+          .ref("shopImages")
+          .child(`${shop_id}${shopImg.name}`)
+          .getDownloadURL()
       )
     );
     console.log(shopImageUrl);
@@ -86,10 +95,10 @@ const MallsDetails = () => {
     const shop_id = Date.now().toString();
     console.log(data);
     let shopImgArr;
-    shopImgArr = await shopImageUploads();
+    shopImgArr = await shopImageUploads(shop_id);
     console.log(shopImgArr);
-    const shopImagesData = shopImgArr.map((imgUrl) => ({
-      shopImgId: uuid(),
+    const shopImagesData = shopImgArr.map((imgUrl, idx) => ({
+      shopImgId: `${shop_id}${shopImages[idx].name}`,
       shopImgUrl: imgUrl,
     }));
     console.log(shopImagesData, "check");
@@ -104,12 +113,53 @@ const MallsDetails = () => {
       .doc(id)
       .update({ shops: [...dbShops, shopData] });
     reset();
+    setIsSubmitting(false);
     setAddShopStatus(false);
     let newMall = [...mall];
     newMall[0].shops = [...dbShops, shopData];
     setMall(newMall);
+    setShopImages([])
   };
   console.log("Mall", mall);
+
+  const onShopDelete = async (shopId, mallId) => {
+    console.log(shopId, mallId);
+    let confirm = window.confirm("Are you sure to Delete??");
+    if (confirm) {
+      console.log("Confirmed");
+      const remainingShops = mall[0].shops.filter((shop) => shop.id !== shopId);
+      console.log("Remaining Shops", remainingShops);
+      const deletedShop = mall[0].shops.filter((x) => x.id === shopId);
+      console.log("Deleted Shop", deletedShop);
+      const shopImagesName = deletedShop[0]?.shopImages.map(
+        (img) => img.shopImgId
+      );
+      console.log(shopImagesName);
+      try {
+        if (shopImagesName.length > 0) {
+          await Promise.all(
+            shopImagesName?.map((img) =>
+              storage
+                .ref("shopImages")
+                .child(img)
+                .delete()
+                .then(() => console.log("Image Deleted"))
+            )
+          );
+        }
+        await fireStore
+          .collection("mallInfo")
+          .doc(mallId)
+          .update({ shops: [...remainingShops] })
+          .then(() => {
+            console.log("All task Done");
+            window.location.reload();
+          });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
   return (
     <>
       {addShopStatus && (
@@ -213,18 +263,16 @@ const MallsDetails = () => {
                 <div className=" mt-5 d-flex">
                   {mall[0].shops &&
                     mall[0].shops.map((shop) => (
-                      <div
-                        className="image-container card-img mr-3"
-                        onClick={() => handleShopClick(shop.id)}
+                      <Card
                         key={shop.id}
-                      >
-                        <div className="detail-containerr">
-                          <h3 style={{ color: "#f1f2f6" }}>
-                            {shop?.shopName}{" "}
-                          </h3>
-                        </div>
-                        <img src={shop?.shopImages[0]?.shopImgUrl} alt="" />
-                      </div>
+                        className="image-container card-img mr-3"
+                        name={shop?.shopName}
+                        func={handleShopClick}
+                        shop={{ mallId: mall[0].id }}
+                        id={shop.id}
+                        imgUrl={shop?.shopImages[0]?.shopImgUrl}
+                        onShopDelete={onShopDelete}
+                      />
                     ))}
                 </div>
               </div>

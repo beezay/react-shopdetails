@@ -20,14 +20,16 @@ h4 {
   position: absolute;
   top: 0;
   right: 0;
-  padding: 20px;
+  padding: 2px;
   font-weight: 600;
   color: crimson;
   z-index: 999;
   transition: all 0.3s ease-out;
+  margin-right: 2px;
+  margin-top:1px;
 }
 
 .delete-on-card:hover {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   /* color: #f3f3; */
 }

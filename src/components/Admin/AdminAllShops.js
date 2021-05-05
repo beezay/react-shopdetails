@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { fireStore } from "../../firebase/firebase";
+import { deleteShopStorage } from "../../utils/Delete";
 import Card from "../common/Card";
 import ShopCard from "../common/ShopCard";
 import SearchMall from "../Search/SearchMall";
@@ -52,10 +53,11 @@ const AdminAllShops = () => {
     if (e.target.value) {
       const searchRegex = new RegExp(e.target.value, "gi");
       let searchedShop = allShops.map((shops) => {
-        shops.shops = shops.shops.filter((shop) =>
+        let newShops = { ...shops };
+        newShops.shops = newShops.shops.filter((shop) =>
           shop.shopName.match(searchRegex)
         );
-        return shops;
+        return newShops;
       });
       console.log("SearchedShop", searchedShop);
       setFilteredShops(searchedShop);
@@ -72,16 +74,10 @@ const AdminAllShops = () => {
 
   const handleShopDelete = async (shopId, mallId) => {
     console.log(shopId, mallId);
-    const filteredMalls = malls.filter((mall) => mall.id === mallId);
-    console.log("Filtered Malls", filteredMalls);
-    const remainingShops = filteredMalls[0].shops.filter(
-      (shop) => shop.id !== shopId
-    );
-    console.log("Remaining Shops", remainingShops);
-    await fireStore
-      .collection("mallInfo")
-      .doc(mallId)
-      .update({ shops: [...remainingShops] });
+    let confirm = window.confirm("Are you sure to Remove Shop?");
+    if (confirm) {
+      await deleteShopStorage(malls, mallId, shopId);
+    }
   };
 
   return (

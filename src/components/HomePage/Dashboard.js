@@ -19,7 +19,7 @@ const Dashboard = ({ history }) => {
 
   const [allMalls, setAllMalls] = useState([]);
   const [filteredMalls, setFilteredMalls] = useState([]);
-  const [loading, setLoading] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const dispatch = useDispatch();
   dispatch(setAdmin(loginStatus));
@@ -28,7 +28,6 @@ const Dashboard = ({ history }) => {
 
   useEffect(() => {
     const fetchMalls = async () => {
-      setLoading(true);
       const fetchedMalls = await fireStore.collection("mallInfo").get();
       const malls = [];
       fetchedMalls.forEach((mall) =>
@@ -41,7 +40,9 @@ const Dashboard = ({ history }) => {
       setAllMalls(malls);
     };
     fetchMalls();
-    setLoading(false);
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
     return fetchMalls;
   }, []);
 
@@ -80,48 +81,53 @@ const Dashboard = ({ history }) => {
   };
 
   return (
-    <div className="container-fluid dashboard-wrapper h-100">
-      <div className="dashboard-header">
-        {loading && <p>Loading...</p>}
-        <div className="btn-wrapper">
-          {isAdmin && (
-            <button className="btn-add-mall" onClick={handleAddNewMall}>
-              ADD NEW MALL
-            </button>
-          )}
-        </div>
-        {allMalls.length > 0 && <SearchMall onchange={onChangeSearch} />}
-      </div>
-      {allMalls.length > 0 ? (
-        <div className="wrapper-container malls-container">
-          <Malls allMalls={allMalls} filterMalls={filteredMalls} />
-          <p className="show-more" onClick={handleAllMalls}>
-            {allMalls > 3 ? "View All" : ""}
-          </p>
-        </div>
+    <>
+      {loading ? (
+        <p>Loading...</p>
       ) : (
-        <NoData
-          title={
-            isAdmin
-              ? "No Any Malls to Show... Add One"
-              : "No Any Malls to Show...Visit Later!!!"
-          }
-        />
-      )}
+        <div className="container-fluid dashboard-wrapper h-100">
+          <div className="dashboard-header">
+            <div className="btn-wrapper">
+              {isAdmin && (
+                <button className="btn-add-mall" onClick={handleAddNewMall}>
+                  ADD NEW MALL
+                </button>
+              )}
+            </div>
+            {allMalls.length > 0 && <SearchMall onchange={onChangeSearch} />}
+          </div>
+          {allMalls.length > 0 ? (
+            <div className="wrapper-container malls-container">
+              <Malls allMalls={allMalls} filterMalls={filteredMalls} />
+              <p className="show-more" onClick={handleAllMalls}>
+                {allMalls > 3 ? "View All" : ""}
+              </p>
+            </div>
+          ) : (
+            <NoData
+              title={
+                isAdmin
+                  ? "No Any Malls to Show... Add One"
+                  : "No Any Malls to Show...Visit Later!!!"
+              }
+            />
+          )}
 
-      <div className="wrapper-container shops-container mb-auto">
-        {shops.length > 0 ? (
-          <>
-            <Shops shops={shops} malls={allMalls} />
-            <p className="show-more" onClick={handleAllShops}>
-              {allMalls > 3 ? "View All" : ""}
-            </p>
-          </>
-        ) : (
-          <NoData title="No Any Shops to Show" />
-        )}
-      </div>
-    </div>
+          <div className="wrapper-container shops-container mb-auto">
+            {shops.length > 0 ? (
+              <>
+                <Shops shops={shops} malls={allMalls} />
+                <p className="show-more" onClick={handleAllShops}>
+                  {allMalls > 3 ? "View All" : ""}
+                </p>
+              </>
+            ) : (
+              <NoData title="No Any Shops to Show" />
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
