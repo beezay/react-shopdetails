@@ -96,7 +96,7 @@ const Dashboard = ({ history }) => {
         <div className="wrapper-container malls-container">
           <Malls allMalls={allMalls} filterMalls={filteredMalls} />
           <p className="show-more" onClick={handleAllMalls}>
-            View All
+            {allMalls > 3 ? "View All" : ""}
           </p>
         </div>
       ) : (
@@ -114,7 +114,7 @@ const Dashboard = ({ history }) => {
           <>
             <Shops shops={shops} malls={allMalls} />
             <p className="show-more" onClick={handleAllShops}>
-              View All
+              {allMalls > 3 ? "View All" : ""}
             </p>
           </>
         ) : (
