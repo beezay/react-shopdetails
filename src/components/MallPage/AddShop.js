@@ -36,13 +36,13 @@ const AddShop = ({ setShopAdd, shopDetails, type }) => {
   };
 
   const handleShopSubmit = (data) => {
-    const id = Date.now();
+    const id = Date.now().toString();
     console.log("Shop Added", images);
     const shopData = {
       id: id.toString(),
       ...data,
       shopImages: images.map((image) => ({
-        id: uuid(),
+        id: `${id}${image.name}`,
         shopImgUrl: image,
       })),
     };

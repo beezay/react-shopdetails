@@ -10,6 +10,7 @@ export const deleteShopStorage = async (malls, mallId, shopId) => {
     (img) => img.shopImgId
   );
   console.log(shopImagesName);
+
   try {
     if (shopImagesName.length > 0) {
       await Promise.all(
@@ -34,3 +35,7 @@ export const deleteShopStorage = async (malls, mallId, shopId) => {
     console.log(e);
   }
 };
+
+export const deleteMallStorage = () => {
+    console.log("delete mall Storage");
+}
