@@ -76,30 +76,44 @@ const ShopId = (props) => {
         shopImages: [...filterAfterDeleteImages],
       };
       console.log("New Shop", newShop);
-      await fireStore
-        .collection("mallInfo")
-        .doc(mallId)
-        .update({ shops: [...dbShops, newShop] });
+      try {
+        await fireStore
+          .collection("mallInfo")
+          .doc(mallId)
+          .update({ shops: [...dbShops, newShop] });
+        await storage
+          .ref("shopImages")
+          .child(`${imgId}`)
+          .delete()
+          .then(() => console.log("Image Deleted"));
+      } catch (e) {
+        console.log(e);
+      }
       setShop([newShop]);
     }
   };
 
   const handleAddedShopImages = (e) => {
     const shopImagesList = Object.values(e.target.files);
+    // console.log(shopImagesList,"shopImageList");
     setShopImages(shopImagesList);
+    console.log(shopImages, "shopImageList");
   };
 
-  const shopImageUploads = async () => {
+  const shopImageUploads = async (uniqueId) => {
     console.log("ShopImages", shopImages);
     await Promise.all(
       shopImages.map((shopImg) =>
-        storage.ref(`shopImages/${shopImg.name}`).put(shopImg)
+        storage.ref(`shopImages/${uniqueId}${shopImg.name}`).put(shopImg)
       )
     );
 
     const shopImageUrl = await Promise.all(
       shopImages.map((shopImg) =>
-        storage.ref("shopImages").child(shopImg?.name).getDownloadURL()
+        storage
+          .ref("shopImages")
+          .child(`${uniqueId}${shopImg?.name}`)
+          .getDownloadURL()
       )
     );
     console.log(shopImageUrl);
@@ -108,12 +122,13 @@ const ShopId = (props) => {
 
   //   HANDLING EDIT FORM
   const handleEditShopSubmit = async (data) => {
+    let uniqueId = Date.now().toString();
     const oldShopImages = shop[0].shopImages;
     setIsSubmitting(true);
     let shopImgArr;
-    shopImgArr = await shopImageUploads();
-    const addedShopImages = shopImgArr.map((imgUrl) => ({
-      shopImgId: uuid(),
+    shopImgArr = await shopImageUploads(uniqueId);
+    const addedShopImages = shopImgArr.map((imgUrl, idx) => ({
+      shopImgId: `${uniqueId}${shopImages[idx].name}`,
       shopImgUrl: imgUrl,
     }));
     // console.log(shopImagesData, "Arr");
