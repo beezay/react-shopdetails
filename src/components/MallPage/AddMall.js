@@ -17,6 +17,7 @@ import {
   resetShops,
 } from "../../redux/MallSlice";
 import uuid from "react-uuid";
+import FileTypeError from "../common/FileTypeError";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
   const [image, setImage] = useState(null);
@@ -51,10 +52,10 @@ const AddMall = ({ history }) => {
   const fileUploadChange = (e) => {
     const mallImage = e.target.files[0];
 
-    setImgPreview(URL.createObjectURL(mallImage));
     if (mallImage && imageTypes.includes(mallImage.type)) {
       setImage(mallImage);
       setImageError("");
+      setImgPreview(URL.createObjectURL(mallImage));
     } else {
       setImage("");
       setImageError("Please Select only  PNG/JPG");
@@ -101,6 +102,11 @@ const AddMall = ({ history }) => {
   };
 
   const handleMallSubmit = async (data) => {
+    if (!image) {
+      setImageError("Mall Image is Required");
+      return;
+    }
+
     let newId = Date.now().toString();
     setIsSubmitting(true);
     let shopImgArr;
@@ -203,10 +209,7 @@ const AddMall = ({ history }) => {
                 </label>
                 {image && <MallPreview image={image} preview={imgPreview} />}
                 {imageError && (
-                  <p className="alert-danger py-2 rounded w-50 m-auto">
-                    {" "}
-                    {imageError}{" "}
-                  </p>
+                  <FileTypeError error={imageError} />
                 )}
                 {errors.mallPic && <Alert title="Image Required!" />}
               </div>

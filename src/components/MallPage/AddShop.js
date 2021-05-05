@@ -4,11 +4,13 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { addShops, addNewShops } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
+import FileTypeError from "../common/FileTypeError";
 
 const AddShop = ({ setShopAdd, shopDetails, type }) => {
   console.log(shopDetails);
 
   const [images, setImages] = useState();
+  const [imageError, setImageError] = useState();
 
   const dispatch = useDispatch();
 
@@ -23,12 +25,26 @@ const AddShop = ({ setShopAdd, shopDetails, type }) => {
     reset,
   } = useForm();
 
+  const imageTypes = ["image/png", "image/jpg", "image/jpeg"];
+
   const handleShopImageAdd = (e) => {
     // console.log(e.target.files);
-
-    const imageList = Object.values(e.target.files);
+    const imageList = Object.values(e.target.files).map((file) => {
+      let imgList = [];
+      if (imageTypes.includes(file.type)) {
+        console.log(file);
+        imgList.push(file);
+        setImageError("");
+      } else {
+        setImageError("Please Select only  PNG/JPG");
+      }
+      return imgList;
+    });
     console.log(imageList);
     setImages(imageList);
+
+    // const imageListt = Object.values(e.target.files);
+    // console.log(imageList);
   };
 
   const check = (data) => {
@@ -36,14 +52,16 @@ const AddShop = ({ setShopAdd, shopDetails, type }) => {
   };
 
   const handleShopSubmit = (data) => {
+    console.log(images);
+
     const id = Date.now().toString();
     console.log("Shop Added", images);
     const shopData = {
       id: id.toString(),
       ...data,
       shopImages: images.map((image) => ({
-        id: `${id}${image.name}`,
-        shopImgUrl: image,
+        id: `${id}${image[0].name}`,
+        shopImgUrl: image[0],
       })),
     };
     check(shopData);
@@ -101,6 +119,7 @@ const AddShop = ({ setShopAdd, shopDetails, type }) => {
           <span className="py-0 mt-2 text-info font-weight-light">
             First Image will be shown as Thumbnail
           </span>
+          {imageError && <FileTypeError error={imageError} />}
         </div>
         <button className="btn btn-lg btn-warning mt-2 " type="submit">
           SAVE SHOP
