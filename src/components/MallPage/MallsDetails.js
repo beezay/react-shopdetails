@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import uuid from "react-uuid";
 import { fireStore, storage } from "../../firebase/firebase";
-import { selectedAllMalls, SelectIsAdmin } from "../../redux/MallSlice";
+import {
+  resetShops,
+  selectedAllMalls,
+  SelectIsAdmin,
+} from "../../redux/MallSlice";
 import Alert from "../common/Alert";
 import Card from "../common/Card";
 import Malls from "../HomePage/Malls";
@@ -37,9 +41,9 @@ const MallsDetails = () => {
         })
       );
       const singleMall = malls.filter((x) => x.id === id);
-      console.log(singleMall[0].shops, malls);
+      console.log(singleMall[0]?.shops, malls);
       setAllMalls(malls);
-      setDbShops(singleMall[0].shops);
+      setDbShops(singleMall[0]?.shops);
       setMall(singleMall);
     };
     fetchMalls();
@@ -50,6 +54,7 @@ const MallsDetails = () => {
   const { id } = useParams();
 
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const handleShopClick = (shopId) => {
     history.push(`/shop/${id}/${shopId}`);
@@ -108,15 +113,45 @@ const MallsDetails = () => {
       .doc(id)
       .update({ shops: [...dbShops, shopData] });
     reset();
+    setIsSubmitting(false);
     setAddShopStatus(false);
     let newMall = [...mall];
     newMall[0].shops = [...dbShops, shopData];
     setMall(newMall);
+    dispatch(resetShops());
   };
   console.log("Mall", mall);
 
-  const onShopDelete = (shopId, mallId) => {
+  const onShopDelete = async (shopId, mallId) => {
     console.log(shopId, mallId);
+    let confirm = window.confirm("Are you sure to Delete??");
+    if (confirm) {
+      console.log("Confirmed");
+      const remainingShops = mall[0].shops.filter((shop) => shop.id !== shopId);
+      console.log("Remaining Shops", remainingShops);
+      const deletedShop = mall[0].shops.filter((x) => x.id === shopId);
+      console.log("Deleted Shop", deletedShop);
+      const shopImagesName = deletedShop[0]?.shopImages.map(
+        (img) => img.shopImgId
+      );
+      console.log(shopImagesName);
+
+      if (shopImagesName.length > 0) {
+        await Promise.all(
+          shopImagesName?.map((img) =>
+            storage
+              .ref("shopImages")
+              .child(img)
+              .delete()
+              .then(() => console.log("Image Deleted"))
+          )
+        );
+      }
+      await fireStore
+        .collection("mallInfo")
+        .doc(mallId)
+        .update({ shops: [...remainingShops] });
+    }
   };
   return (
     <>
