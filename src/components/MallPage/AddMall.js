@@ -11,7 +11,11 @@ import AddedAlert from "../common/AddedAlert";
 import { useDispatch, useSelector } from "react-redux";
 import AddedMallDetails from "./AddedMallDetails";
 import MallPreview from "./MallPreview";
-import { selectAddedShops, removeShop } from "../../redux/MallSlice";
+import {
+  selectAddedShops,
+  removeShop,
+  resetShops,
+} from "../../redux/MallSlice";
 import uuid from "react-uuid";
 const AddMall = ({ history }) => {
   const [shopAdd, setShopAdd] = useState(false);
@@ -57,15 +61,13 @@ const AddMall = ({ history }) => {
     }
   };
 
-  const shopUpload = async () => {
+  const shopUpload = async (newId) => {
     console.log(addedShopsDetails);
     await Promise.all(
       addedShopsDetails.map((shop) =>
         Promise.all(
           shop.shopImages.map((item) =>
-            storage
-              .ref(`shopImages/${item.shopImgUrl.name}`)
-              .put(item.shopImgUrl)
+            storage.ref(`shopImages/${item.id}`).put(item.shopImgUrl)
           )
         )
       )
@@ -75,10 +77,7 @@ const AddMall = ({ history }) => {
       addedShopsDetails.map((shop) =>
         Promise.all(
           shop.shopImages.map((item) =>
-            storage
-              .ref("shopImages")
-              .child(item?.shopImgUrl?.name)
-              .getDownloadURL()
+            storage.ref("shopImages").child(item?.id).getDownloadURL()
           )
         )
       )
@@ -92,8 +91,8 @@ const AddMall = ({ history }) => {
 
     const shopArr = addedShopsDetails.map((shop, idx) => ({
       ...shop,
-      shopImages: imgArr[idx].map((img) => ({
-        shopImgId: uuid(),
+      shopImages: imgArr[idx].map((img, i) => ({
+        shopImgId: shop.shopImages[i].id,
         shopImgUrl: img,
       })),
     }));
@@ -107,7 +106,7 @@ const AddMall = ({ history }) => {
     let shopImgArr;
     if (addedShopsDetails.length > 0) {
       console.log("Loop Entered");
-      shopImgArr = await shopUpload();
+      shopImgArr = await shopUpload(newId);
     }
 
     const shopArr = shopDetails(shopImgArr);
@@ -138,12 +137,13 @@ const AddMall = ({ history }) => {
     setImage(null);
     reset({ defaultValue: "" });
     setShowInfo(true);
+    dispatch(resetShops());
+    setIsSubmitting(false);
+    setShowInfo(true);
     const show = setTimeout(() => {
       setShowInfo(false);
-    }, 5000);
-    dispatch(removeShop());
-    setIsSubmitting(false);
-    history.push("/");
+      history.push("/");
+    }, 1000);
   };
 
   let submitBtnClassName = "w-100 btn btn-lg btn-outline-primary btn-save";

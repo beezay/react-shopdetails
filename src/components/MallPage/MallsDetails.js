@@ -9,6 +9,7 @@ import {
   selectedAllMalls,
   SelectIsAdmin,
 } from "../../redux/MallSlice";
+import { deleteShopStorage } from "../../utils/Delete";
 import Alert from "../common/Alert";
 import Card from "../common/Card";
 import Malls from "../HomePage/Malls";
@@ -113,12 +114,13 @@ const MallsDetails = () => {
       .doc(id)
       .update({ shops: [...dbShops, shopData] });
     reset();
-    setIsSubmitting(false);
-    setAddShopStatus(false);
+    setDbShops([...dbShops, shopData]);
     let newMall = [...mall];
     newMall[0].shops = [...dbShops, shopData];
     setMall(newMall);
-    setShopImages([])
+    setShopImages([]);
+    setIsSubmitting(false);
+    setAddShopStatus(false);
   };
   console.log("Mall", mall);
 
@@ -127,37 +129,7 @@ const MallsDetails = () => {
     let confirm = window.confirm("Are you sure to Delete??");
     if (confirm) {
       console.log("Confirmed");
-      const remainingShops = mall[0].shops.filter((shop) => shop.id !== shopId);
-      console.log("Remaining Shops", remainingShops);
-      const deletedShop = mall[0].shops.filter((x) => x.id === shopId);
-      console.log("Deleted Shop", deletedShop);
-      const shopImagesName = deletedShop[0]?.shopImages.map(
-        (img) => img.shopImgId
-      );
-      console.log(shopImagesName);
-      try {
-        if (shopImagesName.length > 0) {
-          await Promise.all(
-            shopImagesName?.map((img) =>
-              storage
-                .ref("shopImages")
-                .child(img)
-                .delete()
-                .then(() => console.log("Image Deleted"))
-            )
-          );
-        }
-        await fireStore
-          .collection("mallInfo")
-          .doc(mallId)
-          .update({ shops: [...remainingShops] })
-          .then(() => {
-            console.log("All task Done");
-            window.location.reload();
-          });
-      } catch (e) {
-        console.log(e);
-      }
+      await deleteShopStorage(mall, mallId, shopId);
     }
   };
   return (

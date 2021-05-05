@@ -97,14 +97,14 @@ const EditMall = (props) => {
     history.push(`/malls/${id}`);
   };
 
-  const shopUpload = async () => {
+  const shopUpload = async (newId) => {
     console.log(newAddedShopsDetails);
     await Promise.all(
       newAddedShopsDetails.map((shop) =>
         Promise.all(
           shop.shopImages.map((item) =>
             storage
-              .ref(`shopImages/${item.shopImgUrl.name}`)
+              .ref(`shopImages/${item.id}`)
               .put(item.shopImgUrl)
           )
         )
@@ -117,7 +117,7 @@ const EditMall = (props) => {
           shop.shopImages.map((item) =>
             storage
               .ref("shopImages")
-              .child(item?.shopImgUrl?.name)
+              .child(item?.id)
               .getDownloadURL()
           )
         )
@@ -132,8 +132,8 @@ const EditMall = (props) => {
 
     const shopArr = newAddedShopsDetails.map((shop, idx) => ({
       ...shop,
-      shopImages: imgArr[idx].map((img) => ({
-        shopImgId: uuid(),
+      shopImages: imgArr[idx].map((img, i) => ({
+        shopImgId: shop.shopImages[i].id,
         shopImgUrl: img,
       })),
     }));
@@ -143,11 +143,12 @@ const EditMall = (props) => {
 
   const handleMallEditSubmit = async (data) => {
     console.log("Mall Submit => ", data);
+    const newId = Date.now().toString();
     setIsSubmitting(true);
     let newShopImgArr;
     if (newAddedShopsDetails.length > 0) {
       console.log("loop Entered");
-      newShopImgArr = await shopUpload();
+      newShopImgArr = await shopUpload(newId);
     }
 
     const newShopArr = shopDetails(newShopImgArr);
