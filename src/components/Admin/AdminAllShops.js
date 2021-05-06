@@ -80,7 +80,9 @@ const AdminAllShops = () => {
     console.log(shopId, mallId);
     let confirm = window.confirm("Are you sure to Remove Shop?");
     if (confirm) {
+      setIsLoading(true)
       await deleteShopStorage(malls, mallId, shopId);
+      setIsLoading(false);
     }
   };
 
