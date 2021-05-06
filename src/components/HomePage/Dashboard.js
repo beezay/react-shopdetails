@@ -10,6 +10,7 @@ import Shops from "./Shops";
 import { loginStatus } from "../../utils/CheckLogin";
 import NoData from "../common/NoData";
 import AddButton from "../common/AddButton";
+import Loader from "../common/Loader";
 const Dashboard = ({ history }) => {
   // const allMalls = useSelector(selectedAllMalls);
 
@@ -38,7 +39,7 @@ const Dashboard = ({ history }) => {
     fetchMalls();
     setTimeout(() => {
       setLoading(false);
-    }, 2000);
+    }, 1000);
     return fetchMalls;
   }, []);
 
@@ -80,7 +81,7 @@ const Dashboard = ({ history }) => {
   return (
     <>
       {loading ? (
-        <p>Loading...</p>
+        <Loader />
       ) : (
         <div className="container-fluid dashboard-wrapper h-100">
           <div className="dashboard-header">
