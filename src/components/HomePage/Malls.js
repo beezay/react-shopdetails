@@ -1,43 +1,42 @@
 import React from "react";
 import { useHistory } from "react-router";
-import SearchMall from "../Search/SearchMall";
+import { deleteMallStorage } from "../../utils/Delete";
+import Card from "../common/Card";
 
-const Malls = () => {
-  
-  const history = useHistory()
+const Malls = ({ filterMalls }) => {
+  const history = useHistory();
 
-  const handleInfoClick = () => {
-    history.push('/malls/1');
-  }
+  const handleSingleMallClick = (mallId) => {
+    console.log(mallId);
+    history.push(`malls/${mallId}`);
+  };
+
+  const handleSingleMallDelete = async (mallId) => {
+    console.log(mallId);
+    let confirm = window.confirm("Are you sure to Delete Mall??");
+    if (confirm) {
+      await deleteMallStorage(filterMalls, mallId);
+    }
+  };
 
   return (
     <div className="malls-wrapper">
       <div className="mall-heading">
         <h2>MALLS</h2>
-        {/* <SearchMall /> */}
       </div>
       <div className="image-wrapper">
-        <div className="image-container" onClick={handleInfoClick} >
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
-          </div>
-          <img src="./assets/mall.jfif" alt="" />
-        </div>
-        <div className="image-container" onClick={handleInfoClick}>
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
-          </div>
-          <img src="./assets/mall2.jfif" alt="" />
-        </div>
-        <div className="image-container" onClick={handleInfoClick}>
-          <div className="detail-container">
-            <h3>Peoples Plaza</h3>
-            <h3>KhichhaPokhari</h3>
-          </div>
-          <img src="./assets/mall.jfif" alt="" />
-        </div>
+        {filterMalls.map((mall) => (
+          <Card
+            className="image-container"
+            func={handleSingleMallClick}
+            name={mall.mallName}
+            address={mall.mallAddress}
+            imgUrl={mall.mallImage.imageUrl}
+            key={mall.id}
+            id={mall.id}
+            onMallDelete={handleSingleMallDelete}
+          />
+        ))}
       </div>
     </div>
   );
