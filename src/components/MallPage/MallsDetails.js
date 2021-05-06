@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import uuid from "react-uuid";
@@ -12,16 +12,20 @@ import {
 import { deleteShopStorage } from "../../utils/Delete";
 import Alert from "../common/Alert";
 import Card from "../common/Card";
+import Loader from "../common/Loader";
 import Malls from "../HomePage/Malls";
 import SearchMall from "../Search/SearchMall";
 import "./Details.css";
 const MallsDetails = () => {
   const [allMalls, setAllMalls] = useState([]);
   const [mall, setMall] = useState([]);
+  const [mallForDelete, setMallForDelete] = useState([]);
   const [dbShops, setDbShops] = useState();
   const [addShopStatus, setAddShopStatus] = useState(false);
   const [shopImages, setShopImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [filterShops, setFilterShops] = useState([]);
+  const [isLoding, setIsLoading] = useState(true);
 
   const isAdmin = useSelector(SelectIsAdmin);
 
@@ -46,10 +50,12 @@ const MallsDetails = () => {
       console.log(singleMall[0]?.shops, malls);
       setAllMalls(malls);
       setDbShops(singleMall[0]?.shops);
-      setMall(singleMall);
+      setMall(singleMall[0]);
+      setMallForDelete(singleMall);
+      setFilterShops(singleMall[0].shops);
     };
     fetchMalls();
-
+    setIsLoading(false);
     return fetchMalls;
   }, []);
 
@@ -116,8 +122,9 @@ const MallsDetails = () => {
       .update({ shops: [...dbShops, shopData] });
     reset();
     setDbShops([...dbShops, shopData]);
-    let newMall = [...mall];
-    newMall[0].shops = [...dbShops, shopData];
+    let newMall = mall;
+    newMall.shops = [...dbShops, shopData];
+    setFilterShops([...dbShops, shopData]);
     setMall(newMall);
     setShopImages([]);
     setIsSubmitting(false);
@@ -125,16 +132,34 @@ const MallsDetails = () => {
   };
   console.log("Mall", mall);
 
+  const handleShopSearch = (e) => {
+    if (e.target.value) {
+      console.log(e.target.value);
+      const searchRegex = new RegExp(e.target.value, "gi");
+      const searchedShop = mall.shops.filter((shop) =>
+        shop.shopName.match(searchRegex)
+      );
+      console.log(searchedShop);
+      setFilterShops(searchedShop);
+    } else {
+      setFilterShops(mall.shops);
+    }
+  };
+
   const onShopDelete = async (shopId, mallId) => {
     console.log(shopId, mallId);
     let confirm = window.confirm("Are you sure to Delete??");
     if (confirm) {
-      console.log("Confirmed");
-      await deleteShopStorage(mall, mallId, shopId);
+      setIsLoading(true);
+      console.log("Confirmed", mallForDelete);
+
+      await deleteShopStorage(mallForDelete, mallId, shopId);
+      setIsLoading(false);
     }
   };
   return (
     <>
+      {isLoding && <Loader />}
       {addShopStatus && (
         <div className="add-shop-modal">
           <div className="add-shop-wrapper">
@@ -215,42 +240,40 @@ const MallsDetails = () => {
             </button>
           </div>
         )}
-        {mall.length && (
+        {mall && (
           <div className="container-fluid m-0">
             <div className="mall-info text-center mt-1">
               <div className="detail-container">
-                <h1> {mall[0].mallName} </h1>
-                <h3>{mall[0].mallAddress} </h3>
+                <h1> {mall?.mallName} </h1>
+                <h3>{mall?.mallAddress} </h3>
               </div>
               <div className="searchbar">
-                <SearchMall title="Search Shops" />
+                <SearchMall title="Search Shops" onchange={handleShopSearch} />
               </div>
             </div>
             <div className="single-mall-image-container">
               <img
                 className="single-mall-image"
-                src={mall[0].mallImage.imageUrl}
+                src={mall?.mallImage?.imageUrl}
                 alt=""
                 // style={{ maxWidth: "200px", maxHeight: "200px" }}
               />
             </div>
             <div className="container-fluid text-center">
-              <div className="row-cols-4">
-                <div className=" mt-5 d-flex">
-                  {mall[0].shops &&
-                    mall[0].shops.map((shop) => (
-                      <Card
-                        key={shop.id}
-                        className="image-container card-img mr-3"
-                        name={shop?.shopName}
-                        func={handleShopClick}
-                        shop={{ mallId: mall[0].id }}
-                        id={shop.id}
-                        imgUrl={shop?.shopImages[0]?.shopImgUrl}
-                        onShopDelete={onShopDelete}
-                      />
-                    ))}
-                </div>
+              <div className=" mt-5 shop-card-container">
+                {filterShops &&
+                  filterShops.map((shop) => (
+                    <Card
+                      key={shop.id}
+                      className="image-container card-img mr-3"
+                      name={shop?.shopName}
+                      func={handleShopClick}
+                      shop={{ mallId: mall.id }}
+                      id={shop.id}
+                      imgUrl={shop?.shopImages[0]?.shopImgUrl}
+                      onShopDelete={onShopDelete}
+                    />
+                  ))}
               </div>
             </div>
           </div>

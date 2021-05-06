@@ -3,6 +3,7 @@ import { useHistory } from "react-router";
 import { fireStore } from "../../firebase/firebase";
 import { deleteShopStorage } from "../../utils/Delete";
 import Card from "../common/Card";
+import Loader from "../common/Loader";
 import ShopCard from "../common/ShopCard";
 import SearchMall from "../Search/SearchMall";
 
@@ -10,7 +11,7 @@ const AdminAllShops = () => {
   const [malls, setMalls] = useState([]);
   const [allShops, setAllShops] = useState([]);
   const [filteredShops, setFilteredShops] = useState([]);
-  const [isLoading, setIsLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const history = useHistory();
 
@@ -39,7 +40,10 @@ const AdminAllShops = () => {
       setMalls(malls);
     };
     fetchMalls();
-    setIsLoading(false);
+    // setIsLoading(false);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 600);
     return fetchMalls;
   }, []);
 
@@ -76,38 +80,46 @@ const AdminAllShops = () => {
     console.log(shopId, mallId);
     let confirm = window.confirm("Are you sure to Remove Shop?");
     if (confirm) {
+      setIsLoading(true)
       await deleteShopStorage(malls, mallId, shopId);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="malls-wrapper">
-      <div className="mall-heading">
-        <h2>Shops</h2>
-        <SearchMall onchange={onChangeSearch} />
-      </div>
-      {/* {loading && <h4>LOADING...</h4>} */}
-      {filteredShops.length && (
-        <div className="image-wrapper">
-          {filteredShops?.map((shops) =>
-            shops.shops.map((shop) => (
-              <ShopCard
-                className="image-container"
-                func={handleInfoClick}
-                name={shop?.shopName}
-                address={shops?.mallName}
-                imgUrl={shop?.shopImages[0]?.shopImgUrl}
-                key={shop?.id}
-                id={shop?.id}
-                mallId={shops.mallId}
-                // onClick={()=>handleInfoClick(mall.id)}
-                onShopDelete={handleShopDelete}
-              />
-            ))
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="malls-wrapper">
+          <div className="mall-heading">
+            <h2>Shops</h2>
+            <SearchMall onchange={onChangeSearch} title="Search Shops..." />
+          </div>
+          {/* {loading && <h4>LOADING...</h4>} */}
+          {filteredShops.length && (
+            <div className="image-wrapper">
+              {filteredShops?.map((shops) =>
+                shops.shops.map((shop) => (
+                  <ShopCard
+                    className="image-container"
+                    func={handleInfoClick}
+                    name={shop?.shopName}
+                    address={shops?.mallName}
+                    imgUrl={shop?.shopImages[0]?.shopImgUrl}
+                    key={shop?.id}
+                    id={shop?.id}
+                    mallId={shops.mallId}
+                    // onClick={()=>handleInfoClick(mall.id)}
+                    onShopDelete={handleShopDelete}
+                  />
+                ))
+              )}
+            </div>
           )}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

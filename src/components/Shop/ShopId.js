@@ -7,6 +7,7 @@ import { fireStore, storage } from "../../firebase/firebase";
 import { SelectIsAdmin } from "../../redux/MallSlice";
 import Alert from "../common/Alert";
 import FileTypeError from "../common/FileTypeError";
+import Loader from "../common/Loader";
 import "./Shop.css";
 
 const ShopId = (props) => {
@@ -26,6 +27,7 @@ const ShopId = (props) => {
   const [shopImages, setShopImages] = useState([]);
 
   const [imageError, setImageError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isAdmin = useSelector(SelectIsAdmin);
 
@@ -61,6 +63,7 @@ const ShopId = (props) => {
       setMall(singleMall);
     };
     fetchMall();
+    setIsLoading(false);
   }, []);
 
   //! Delete SHop Images
@@ -68,6 +71,7 @@ const ShopId = (props) => {
     console.log(imgId);
     let confirm = window.confirm("Are you Sure you want to Delete this Image?");
     if (confirm) {
+      setIsLoading(true);
       const oldShopImages = shop[0].shopImages;
       console.log(oldShopImages);
       const filterAfterDeleteImages = oldShopImages.filter(
@@ -95,6 +99,7 @@ const ShopId = (props) => {
         console.log(e);
       }
       setShop([newShop]);
+      setIsLoading(false);
     }
   };
 
@@ -138,6 +143,7 @@ const ShopId = (props) => {
 
   //   HANDLING EDIT FORM
   const handleEditShopSubmit = async (data) => {
+    // setIsLoading(true)
     let uniqueId = Date.now().toString();
     const oldShopImages = shop[0].shopImages;
     setIsSubmitting(true);
@@ -233,6 +239,7 @@ const ShopId = (props) => {
           </div>
         </div>
       )}
+      {isLoading && <Loader />}
       <div className="container-fluid text-center py-4">
         <div className="container">
           <h1> {shop[0]?.shopName} </h1>

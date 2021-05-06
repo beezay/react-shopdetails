@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router";
-import {
-  SelectIsAdmin,
-  selectedAllMalls,
-  setAdmin,
-} from "../../redux/MallSlice";
+import { SelectIsAdmin, setAdmin } from "../../redux/MallSlice";
 import SearchMall from "../Search/SearchMall";
 import "./Dashboard.css";
 import { fireStore } from "../../firebase/firebase";
-import { fetchMalls } from "../../redux/MallSlice";
 import Malls from "./Malls";
 import Shops from "./Shops";
 import { loginStatus } from "../../utils/CheckLogin";
 import NoData from "../common/NoData";
 import AddButton from "../common/AddButton";
+import Loader from "../common/Loader";
 const Dashboard = ({ history }) => {
   // const allMalls = useSelector(selectedAllMalls);
 
@@ -37,13 +33,13 @@ const Dashboard = ({ history }) => {
           ...mall.data(),
         })
       );
-      setFilteredMalls(malls.slice(0, 4));
+      setFilteredMalls(malls.slice(0, 3));
       setAllMalls(malls);
     };
     fetchMalls();
     setTimeout(() => {
       setLoading(false);
-    }, 3000);
+    }, 1000);
     return fetchMalls;
   }, []);
 
@@ -59,7 +55,7 @@ const Dashboard = ({ history }) => {
       console.log("allMalls", allMalls);
       setFilteredMalls(searchedMall);
     } else {
-      setFilteredMalls(allMalls.slice(0, 4));
+      setFilteredMalls(allMalls.slice(0, 3));
     }
   };
 
@@ -81,10 +77,11 @@ const Dashboard = ({ history }) => {
     history.push("/shops");
   };
 
+  console.log("All Malls=>", allMalls);
   return (
     <>
       {loading ? (
-        <p>Loading...</p>
+        <Loader />
       ) : (
         <div className="container-fluid dashboard-wrapper h-100">
           <div className="dashboard-header">
@@ -97,7 +94,7 @@ const Dashboard = ({ history }) => {
             <div className="wrapper-container malls-container">
               <Malls allMalls={allMalls} filterMalls={filteredMalls} />
               <p className="show-more" onClick={handleAllMalls}>
-                {allMalls > 3 ? "View All" : ""}
+                {allMalls.length > 3 ? "View All" : ""}
               </p>
             </div>
           ) : (
@@ -115,7 +112,7 @@ const Dashboard = ({ history }) => {
               <>
                 <Shops shops={shops} malls={allMalls} />
                 <p className="show-more" onClick={handleAllShops}>
-                  {allMalls > 3 ? "View All" : ""}
+                  {allMalls.length > 3 ? "View All" : ""}
                 </p>
               </>
             ) : (
