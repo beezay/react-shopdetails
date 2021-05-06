@@ -86,11 +86,12 @@
 
 .image-wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 40px;
+  grid-template-columns: auto auto auto;
+  grid-gap: 2vw;
 }
 
 .image-container {
+  /* background: brown; */
   overflow: hidden;
   height: 0;
   padding: 30% 0;
@@ -118,7 +119,8 @@
 }
 
 .image-container .detail-container h3 {
-  color: #f1f2f6;
+  /* color: #f1f2f6; */
+  color: #200f21;
   font-size: 1.3em;
   font-weight: 900;
   /* z-index: 2 !important; */
@@ -126,8 +128,10 @@
 }
 
 .image-container .detail-container h4 {
-  color: #f1f2f6;
+  /* color: #f1f2f6; */
+  color: #200f21;
   font-size: 1.1em;
+  font-weight: 400;
 }
 
 .image-container img {

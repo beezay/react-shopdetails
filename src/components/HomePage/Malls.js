@@ -1,11 +1,9 @@
 import React from "react";
 import { useHistory } from "react-router";
-import { fireStore, storage } from "../../firebase/firebase";
 import { deleteMallStorage } from "../../utils/Delete";
 import Card from "../common/Card";
-import SearchMall from "../Search/SearchMall";
 
-const Malls = ({ allMalls, filterMalls }) => {
+const Malls = ({ filterMalls }) => {
   const history = useHistory();
 
   const handleSingleMallClick = (mallId) => {
